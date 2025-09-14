@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 4 - AWS AI/ML Deep Dive | Course Series by Adarshana</title>
+    <meta name="description" content="A detailed look at key AWS managed AI/ML services and how to build applications with them.">
+    <style>
+        @import url('https://fonts.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 4 - AI SERVICES</div>
+                <h1 class="course-title">AWS AI/ML Deep Dive</h1>
+                <p class="course-subtitle">A closer look at how AWS services enable real-world AI applications.</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">📖</div>
+                        <span>20 min read</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🎯</div>
+                        <span>Intermediate</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">💡</div>
+                        <span>Practical Examples</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <p>While the previous section introduced several AWS AI services, let's now take a deeper dive into what each service does and how you can combine them to create powerful, end-to-end AI solutions.</p>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Amazon SageMaker</h2>
+                <p><strong>Amazon SageMaker</strong> is a fully managed service that provides every tool you need to build, train, and deploy machine learning models at scale. Think of it as a comprehensive platform for the entire machine learning lifecycle. It's designed for data scientists and developers who want full control over their model development process.</p>
+                
+                <h3 class="subsection-title">Building a Solution with SageMaker</h3>
+                <p>Imagine you need to build a custom sentiment analysis model for customer feedback. You would typically use SageMaker to handle the entire process.
+                    
+                </p>
+                <ul>
+                    <li><strong>Data Preparation:</strong> Store raw customer feedback data (text files) in an Amazon S3 bucket. You can use SageMaker's built-in tools to clean and preprocess this data.</li>
+                    <li><strong>Model Training:</strong> Launch a SageMaker Notebook to write and execute your training script. You can choose from many pre-built algorithms or bring your own. SageMaker handles the infrastructure, automatically spinning up and down computing resources as needed.</li>
+                    <li><strong>Deployment:</strong> Once the model is trained, you can deploy it as a fully managed API endpoint. This endpoint can be called by other applications to get real-time sentiment predictions on new text data.</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Amazon Transcribe</h2>
+                <p><strong>Amazon Transcribe</strong> automatically converts spoken words into text. It's a highly accurate and scalable speech-to-text service that supports a wide range of audio and video formats. It can also identify different speakers in a conversation and provide timestamps for each word.</p>
+
+                <h3 class="subsection-title">Building a Solution with Transcribe</h3>
+                <p>Consider a system for analyzing customer calls in a call center. You can use Transcribe to convert the audio into text for analysis.
+                    
+                </p>
+                <ul>
+                    <li><strong>Audio Ingestion:</strong> Customer call recordings are uploaded to an S3 bucket.</li>
+                    <li><strong>Trigger Transcription:</strong> An S3 event notification triggers an AWS Lambda function. This function initiates a transcription job in Amazon Transcribe for the new audio file.</li>
+                    <li><strong>Text Analysis:</strong> Once the transcription is complete, the text is saved back to S3. Another Lambda function can be triggered to send this text to Amazon Comprehend for sentiment analysis.</li>
+                    <li><strong>Reporting:</strong> The final sentiment scores and transcripts are stored in a database, allowing business analysts to create dashboards and reports on customer satisfaction.</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Amazon Translate</h2>
+                <p><strong>Amazon Translate</strong> is a neural machine translation service that delivers high-quality, real-time language translation. It can be used to translate text or documents into different languages, making it easy to create multilingual applications.</p>
+
+                <h3 class="subsection-title">Building a Solution with Translate</h3>
+                <p>Imagine you have a global customer support team that needs to handle tickets in various languages.
+                    
+                </p>
+                <ul>
+                    <li><strong>Ticket Ingestion:</strong> Customer support tickets in various languages are submitted and stored in a database.</li>
+                    <li><strong>Translation Service:</strong> An application server retrieves a ticket and uses the Amazon Translate API to convert the text to the support team's primary language (e.g., English).</li>
+                    <li><strong>Human-in-the-Loop:</strong> The translated ticket is displayed to the support agent. The agent can then use Translate again to write a reply in their native language and translate it back for the customer.</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Amazon Comprehend</h2>
+                <p><strong>Amazon Comprehend</strong> uses natural language processing (NLP) to uncover insights and relationships in text. It can perform sentiment analysis, extract key phrases and entities (like names, dates, or locations), and detect the language of a document. It's a pre-trained service, meaning you don't need to build or train your own NLP models.</p>
+
+                <h3 class="subsection-title">Building a Solution with Comprehend</h3>
+                <p>Let's build a system for real-time social media sentiment monitoring.
+                    
+                </p>
+                <ul>
+                    <li><strong>Data Stream:</strong> A live stream of social media posts is sent to an Amazon Kinesis Data Firehose stream.</li>
+                    <li><strong>Processing:</strong> A Lambda function reads the incoming data from the stream and calls the Amazon Comprehend API to perform sentiment analysis (positive, negative, neutral, or mixed).</li>
+                    <li><strong>Data Storage:</strong> The Lambda function writes the sentiment score and the original text to an Amazon DynamoDB table.</li>
+                    <li><strong>Visualization:</strong> A front-end application reads from the DynamoDB table to display a real-time dashboard of sentiment trends.</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Amazon Lex</h2>
+                <p><strong>Amazon Lex</strong> is a service for building conversational interfaces for applications using voice and text. It is the same technology that powers Amazon Alexa. You define the intent of the user (what they want to do) and the slots (the variables needed to fulfill that intent), and Lex handles the natural language understanding.</p>
+
+                <h3 class="subsection-title">Building a Solution with Lex</h3>
+                <p>You can create a simple automated travel booking bot.
+                    
+                </p>
+                <ul>
+                    <li><strong>User Interaction:</strong> A user interacts with the chatbot on a website. Their request, such as "book a flight from New York to London," is sent to the Lex bot.</li>
+                    <li><strong>Intent Recognition:</strong> Lex recognizes the user's intent ("BookFlight") and identifies the slot values ("New York" and "London").</li>
+                    <li><strong>Fulfillment:</strong> Lex triggers an AWS Lambda function to fulfill the intent. The Lambda function can then call an external travel API to find and book the flight.</li>
+                    <li><strong>Response:</strong> The Lambda function returns a response to Lex, which then delivers the confirmation message to the user.</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Amazon Polly</h2>
+                <p><strong>Amazon Polly</strong> turns text into lifelike speech. It offers dozens of realistic voices and supports multiple languages. It's perfect for applications that need to provide an audio experience without recording human voice actors.</p>
+
+                <h3 class="subsection-title">Building a Solution with Polly</h3>
+                <p>Let's build a system that creates audio versions of blog posts for a podcast.
+                    
+                </p>
+                <ul>
+                    <li><strong>Text Upload:</strong> A user uploads a new blog post text to an S3 bucket.</li>
+                    <li><strong>Processing:</strong> An S3 event triggers a Lambda function that sends the text to the Amazon Polly API.</li>
+                    <li><strong>Audio Generation:</strong> Polly converts the text into an audio file (MP3 or another format) using a selected voice.</li>
+                    <li><strong>Storage and Delivery:</strong> The generated audio file is saved back to S3. A user can then listen to the audio version of the blog post via a link to the S3 file.</li>
+                </ul>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
