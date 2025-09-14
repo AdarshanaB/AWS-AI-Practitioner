@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 3 - Real-World AI Applications | Course Series by Adarshana</title>
+    <meta name="description" content="Explore real-world examples of AI applications and the AWS services that power them.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .comparison-row {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.3s ease;
+        }
+
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-row:nth-child(even) {
+            background-color: #f8f9ff;
+        }
+        
+        .comparison-row:hover {
+            background-color: #f0f2ff;
+        }
+        
+        .comparison-header .comparison-cell {
+            background-color: #667eea;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            padding: 18px;
+        }
+
+        .comparison-cell {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .comparison-cell:last-child {
+            border-right: none;
+        }
+
+        .comparison-cell strong {
+            color: #4a4a4a;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .comparison-row {
+                flex-direction: column;
+            }
+
+            .comparison-cell {
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            .comparison-cell:last-child {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 3 - AI APPLICATIONS</div>
+                <h1 class="course-title">AI in the Real World</h1>
+                <p class="course-subtitle">Understanding everyday AI applications and the AWS services that power them.</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">📖</div>
+                        <span>15 min read</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🎯</div>
+                        <span>Intermediate</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">💡</div>
+                        <span>Practical Use Cases</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Common AI Application Domains</h2>
+                <p>AI isn't just a buzzword; it's integrated into countless products and services we use every day. Here are some of the most common applications of AI:</p>
+                <ul>
+                    <li><strong>Computer Vision:</strong> Enables machines to "see" and interpret visual data from the world.
+                        <p><strong>Examples:</strong> Self-driving cars detecting pedestrians, facial recognition for unlocking phones, quality control on a factory production line.</p>
+                    </li>
+                    <li><strong>Natural Language Processing (NLP):</strong> Allows machines to understand, interpret, and generate human language.
+                        <p><strong>Examples:</strong> Chatbots in customer service, analyzing customer reviews for sentiment, automatically translating text between languages.</p>
+                    </li>
+                    <li><strong>Speech Recognition:</strong> Converts spoken words into text.
+                        <p><strong>Examples:</strong> Voice assistants like Siri and Alexa, dictating a text message, transcribing a recorded meeting.</p>
+                    </li>
+                    <li><strong>Recommendation Systems:</strong> Predicts user preferences to suggest relevant products, content, or services.
+                        <p><strong>Examples:</strong> Netflix suggesting movies you might like, Amazon recommending products, Spotify creating a personalized playlist.</p>
+                    </li>
+                    <li><strong>Fraud Detection:</strong> Identifies unusual patterns in data that indicate fraudulent activity.
+                        <p><strong>Examples:</strong> A bank flagging a large, unusual transaction on your credit card, an e-commerce site detecting a fake user account.</p>
+                    </li>
+                    <li><strong>Forecasting:</strong> Predicts future outcomes based on historical data.
+                        <p><strong>Examples:</strong> A retailer predicting next week's sales, a utility company forecasting energy demand, a travel app predicting flight prices.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">AWS Managed AI/ML Services</h2>
+                <p>AWS offers a suite of managed services that make it easier to add AI capabilities to your applications without having to build models from scratch. These services handle the underlying complexity, so you can focus on building your solution.</p>
+                <div class="table-container">
+                    <div class="comparison-table">
+                        <div class="comparison-row comparison-header">
+                            <div class="comparison-cell">Service Name</div>
+                            <div class="comparison-cell">Purpose</div>
+                            <div class="comparison-cell">Real-World Example</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="comparison-cell"><strong>Amazon SageMaker</strong></div>
+                            <div class="comparison-cell">A fully-managed service to build, train, and deploy machine learning models at scale.</div>
+                            <div class="comparison-cell">A data scientist uses SageMaker to build a custom model that predicts customer churn for their business.</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="comparison-cell"><strong>Amazon Transcribe</strong></div>
+                            <div class="comparison-cell">Converts speech to text automatically and accurately.</div>
+                            <div class="comparison-cell">A call center automatically transcribes all customer calls for later analysis of common issues.</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="comparison-cell"><strong>Amazon Translate</strong></div>
+                            <div class="comparison-cell">Provides high-quality language translation on demand.</div>
+                            <div class="comparison-cell">A global company uses Translate to automatically convert customer support tickets into English for their support team.</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="comparison-cell"><strong>Amazon Comprehend</strong></div>
+                            <div class="comparison-cell">Uses NLP to find insights and relationships in text.</div>
+                            <div class="comparison-cell">A marketing team uses Comprehend to analyze product reviews and understand customer sentiment.</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="comparison-cell"><strong>Amazon Lex</strong></div>
+                            <div class="comparison-cell">Builds conversational interfaces (chatbots) and voice assistants.</div>
+                            <div class="comparison-cell">A retail company creates an online chatbot to help customers track their orders and process returns.</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="comparison-cell"><strong>Amazon Polly</strong></div>
+                            <div class="comparison-cell">Turns text into lifelike speech.</div>
+                            <div class="comparison-cell">An e-learning platform uses Polly to read course material aloud for users who prefer to listen.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
