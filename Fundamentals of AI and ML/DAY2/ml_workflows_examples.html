@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 3 - ML Workflows in Practice | Course Series by Adarshana</title>
+    <meta name="description" content="Detailed workflows for implementing Classification and Regression models.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .content-block {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 25px;
+            border-radius: 0 12px 12px 0;
+            margin: 20px 0;
+        }
+
+        .content-block h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .content-block p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .highlight-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .highlight-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .workflow-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .workflow-step {
+            width: 80%;
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .workflow-step:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border: 3px solid white;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .step-description {
+            color: #555;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .arrow {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #667eea;
+            animation: bounce 1.5s infinite;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .workflow-step {
+                width: 100%;
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(10px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 3 - ML WORKFLOWS</div>
+                <h1 class="course-title">Workflows in Practice</h1>
+                <p class="course-subtitle">A step-by-step guide to applying ML techniques to real-world problems</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">📖</div>
+                        <span>25 min read</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🎯</div>
+                        <span>Intermediate</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">💡</div>
+                        <span>Practical Examples</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <p>Now that you understand the different types of machine learning, let's look at how these techniques are applied in a complete project. We'll walk through two examples, a Classification problem and a Regression problem, to see the end-to-end workflow from data to a deployed solution.</p>
+            </div>
+
+            <!-- WORKFLOW 1: FRAUD DETECTION -->
+            <div class="section">
+                <h2 class="section-title">Workflow 1: Fraud Detection (Classification)</h2>
+                <p><strong>The Problem:</strong> A financial company wants to automatically flag credit card transactions as either "fraudulent" or "not fraudulent." This is a **Classification** problem because the output is a category.</p>
+
+                <div class="workflow-diagram">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Data Collection & Labeling</div>
+                        <div class="step-description">Gather a large dataset of past transactions. Each transaction must be **labeled** with the correct outcome: "Fraudulent" or "Not Fraudulent." This labeled data is crucial for supervised learning.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Feature Engineering & Pre-processing</div>
+                        <div class="step-description">Clean and prepare the data. This might involve handling missing values, scaling numerical features, and creating new features that could be useful to the model (e.g., "average spending per hour").</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Model Training</div>
+                        <div class="step-description">Choose a classification algorithm (like a Decision Tree or Logistic Regression) and feed it the prepared, labeled data. The model learns the patterns that distinguish fraudulent transactions from legitimate ones.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Model Evaluation</div>
+                        <div class="step-description">Test the trained model on a separate dataset it has never seen before. Evaluate its performance using metrics like accuracy, precision, and recall to ensure it can correctly identify fraud.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">5</div>
+                        <div class="step-title">Deployment & Inference</div>
+                        <div class="step-description">Integrate the trained model into the company's live systems. Now, when a new transaction occurs, the model can perform a **real-time inference** (prediction) to determine if it should be flagged as potentially fraudulent.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WORKFLOW 2: HOUSE PRICE PREDICTION -->
+            <div class="section">
+                <h2 class="section-title">Workflow 2: House Price Prediction (Regression)</h2>
+                <p><strong>The Problem:</strong> A real estate firm wants to predict the selling price of a house. This is a **Regression** problem because the output is a continuous number (the price).</p>
+
+                <div class="workflow-diagram">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Data Collection & Labeling</div>
+                        <div class="step-description">Gather data from past house sales. The dataset should include features like square footage, number of bedrooms, location, and the **target variable**, which is the final selling price.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Feature Engineering & Pre-processing</div>
+                        <div class="step-description">Clean the data by handling missing values and converting non-numerical data into a format the model can understand. You might also create new features, such as "age of the house" from the "year built" feature.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Model Training</div>
+                        <div class="step-description">Select a regression algorithm (like Linear Regression or a Random Forest Regressor) and train it on the prepared dataset. The model learns the relationships between the house's features and its price.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Model Evaluation</div>
+                        <div class="step-description">Measure how well the model's predictions match the actual prices on a test dataset. Metrics like Mean Absolute Error (MAE) or Root Mean Squared Error (RMSE) are used to assess the model's accuracy.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">5</div>
+                        <div class="step-title">Prediction Service</div>
+                        <div class="step-description">Make the model available as a service. A real estate agent can now input the features of a new house, and the model will predict a reasonable selling price, saving time and providing a data-driven estimate.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WORKFLOW 3: CUSTOMER SEGMENTATION -->
+            <div class="section">
+                <h2 class="section-title">Workflow 3: Customer Segmentation (Clustering)</h2>
+                <p><strong>The Problem:</strong> A retail company wants to group its customers into distinct segments based on their purchasing behavior to create targeted marketing campaigns. This is a **Clustering** problem because the goal is to discover hidden groups in unlabeled data.</p>
+                <div class="workflow-diagram">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Data Collection (Unlabeled Data)</div>
+                        <div class="step-description">Gather customer transaction data, including purchase history, frequency of visits, average spend, and products bought. This data is **unlabeled** because there are no predefined customer groups.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Feature Selection & Pre-processing</div>
+                        <div class="step-description">Select the most relevant features for grouping customers. Clean and scale the data to ensure all features contribute equally to the clustering process.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Model Training (Clustering)</div>
+                        <div class="step-description">Apply a clustering algorithm like K-Means to the dataset. The algorithm will automatically group the customers into clusters based on the similarity of their features, such as "high-value buyers" or "discount shoppers."</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Cluster Analysis & Interpretation</div>
+                        <div class="step-description">Analyze each cluster to understand its characteristics. You might find that one cluster consists of young, tech-savvy customers while another is made up of older, more conservative shoppers.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">5</div>
+                        <div class="step-title">Application & Targeted Action</div>
+                        <div class="step-description">Use the discovered customer segments to tailor marketing strategies. For example, send personalized product recommendations to the "high-value buyers" cluster or offer special discounts to the "discount shoppers" cluster.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WORKFLOW 4: MANUFACTURING DEFECT DETECTION -->
+            <div class="section">
+                <h2 class="section-title">Workflow 4: Manufacturing Defect Detection (Anomaly Detection)</h2>
+                <p><strong>The Problem:</strong> A factory wants to automatically identify faulty products on an assembly line. This is an **Anomaly Detection** problem because the goal is to find rare, abnormal items that deviate from the standard pattern of "good" products.</p>
+                <div class="workflow-diagram">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Data Collection & Profiling</div>
+                        <div class="step-description">Gather a large dataset of images or sensor readings from products known to be in perfect condition. This data serves as the baseline for what is considered "normal."</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Feature Engineering & Pre-processing</div>
+                        <div class="step-description">Extract key features from the data, such as product dimensions, texture properties, or sensor value distributions. The data is pre-processed and scaled to be suitable for the model.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Model Training (Anomalies)</div>
+                        <div class="step-description">Train a model on the dataset of **normal** products. The model learns a detailed profile of what a good product looks like, and what features it should have, without ever seeing a faulty one.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Anomaly Scoring & Thresholding</div>
+                        <div class="step-description">The model can now generate an "anomaly score" for any new product. A threshold is set so that if a product's score is above this value, it's considered an anomaly or a defect.</div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="workflow-step">
+                        <div class="step-number">5</div>
+                        <div class="step-title">Live Monitoring & Alerting</div>
+                        <div class="step-description">Deploy the model to the assembly line. The model processes images of new products in real-time and automatically flags any that have a high anomaly score, alerting an operator to check for a potential defect.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
