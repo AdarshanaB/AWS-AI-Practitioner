@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 2 - AI Use Cases | Course Series by Adarshana</title>
+    <meta name="description" content="Explore practical applications for AI/ML and learn to choose the right technique for the job.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .content-block {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 25px;
+            border-radius: 0 12px 12px 0;
+            margin: 20px 0;
+        }
+
+        .content-block h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .content-block p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .highlight-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .highlight-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .use-case-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .use-case-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .use-case-card h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .use-case-card p {
+            color: #555;
+            font-size: 1rem;
+        }
+
+        .comparison-table {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin: 25px 0;
+            overflow-x: auto;
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 2fr;
+            gap: 20px;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+            align-items: start;
+        }
+
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-header {
+            font-weight: 700;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f8f9ff, #e8ecff);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .comparison-cell {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .comparison-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 2 - AI FUNDAMENTALS</div>
+                <h1 class="course-title">AI in the Real World</h1>
+                <p class="course-subtitle">Identifying practical applications and choosing the right approach</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">📖</div>
+                        <span>18 min read</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🎯</div>
+                        <span>Beginner</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">💡</div>
+                        <span>Key Concepts</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WHEN TO USE AI/ML -->
+            <div class="section">
+                <h2 class="section-title">When is AI the Right Tool?</h2>
+                <p>AI isn't a silver bullet for every problem. It shines in specific situations where it can automate tasks, scale operations, or make better predictions than a human can. The following are key indicators that an AI solution might be a good fit.</p>
+                <div class="use-case-card">
+                    <h3>Predictive Analysis</h3>
+                    <p>When you need to predict a future outcome based on past data. This can include anything from forecasting sales to predicting customer churn or identifying potential fraud. AI models excel at finding patterns in large datasets that are invisible to the human eye.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>Automation & Efficiency</h3>
+                    <p>For tasks that are repetitive, time-consuming, and rule-based, AI can automate the process to improve efficiency. This frees up human workers to focus on more complex or creative tasks. Think of automated data entry or a chatbot handling common customer questions.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>Scalability</h3>
+                    <p>AI models can work 24/7 and handle vast amounts of data simultaneously. If a problem requires analyzing millions of data points, an AI solution can provide a scalable, fast, and cost-effective way to get the job done.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>Pattern Recognition</h3>
+                    <p>AI is extremely good at recognizing patterns in unstructured data like images, audio, or text. This is why it's used for facial recognition, voice assistants, and sentiment analysis on social media posts.</p>
+                </div>
+            </div>
+
+            <!-- WHEN TO AVOID AI/ML -->
+            <div class="section">
+                <h2 class="section-title">When to Reconsider an AI Solution</h2>
+                <p>Just as important as knowing when to use AI is knowing when to avoid it. Applying AI in the wrong situation can lead to unnecessary costs, complexity, and poor results. Here are some red flags:</p>
+                <div class="highlight-box" style="background: linear-gradient(135deg, rgba(236, 96, 96, 0.1), rgba(162, 75, 75, 0.1)); border-color: rgba(236, 96, 96, 0.2);">
+                    <div class="highlight-title">
+                        <div class="highlight-icon" style="background: linear-gradient(135deg, #ec6060, #a24b4b);">⛔</div>
+                        Key Considerations
+                    </div>
+                    <ul style="list-style-type: disc; padding-left: 20px; color: #555;">
+                        <li style="margin-bottom: 10px;"><strong>Lack of Data:</strong> AI/ML models are data-hungry. If you don't have a large, high-quality, and representative dataset, the model will not be able to learn effectively, leading to poor performance.</li>
+                        <li style="margin-bottom: 10px;"><strong>Need for a Specific Outcome:</strong> AI models provide predictions, not guarantees. If a task requires a deterministic, 100% correct answer (e.g., a simple calculation), a traditional algorithm is a better choice.</li>
+                        <li style="margin-bottom: 10px;"><strong>High Cost vs. Low Benefit:</strong> The cost of developing, training, and maintaining an AI model can be substantial. If a simple, non-AI solution exists that solves the problem with minimal effort and cost, it's often the more practical choice.</li>
+                        <li><strong>Ethical or Bias Concerns:</strong> If your training data contains biases (e.g., in a hiring tool), the AI model will learn and amplify those biases. Implementing AI in sensitive areas requires careful consideration of fairness and transparency.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ML TECHNIQUES CONTEXT -->
+            <div class="section">
+                <h2 class="section-title">Understanding Machine Learning Techniques</h2>
+                <p>Machine learning techniques are the specific algorithms used to solve different types of problems. These techniques fall under the broader categories of learning types we discussed in Day 1: supervised and unsupervised learning.</p>
+                <div class="content-block">
+                    <h3>Supervised Learning Techniques</h3>
+                    <p>These techniques use **labeled data** to learn a mapping from input to output. The goal is to make predictions on new data based on the patterns found in the labeled training data.</p>
+                    <ul>
+                        <li><strong>Regression:</strong> Used when the output you want to predict is a **continuous number**. For example, predicting a house price, a stock value, or the temperature.</li>
+                        <li><strong>Classification:</strong> Used when the output you want to predict is a **category**. The model assigns an input to one of two or more classes. For example, classifying an email as spam or not spam, or categorizing an image as a cat, a dog, or a bird.</li>
+                    </ul>
+                </div>
+                <div class="content-block">
+                    <h3>Unsupervised Learning Techniques</h3>
+                    <p>These techniques use **unlabeled data** to discover hidden patterns or intrinsic structures within the data. There is no predefined output to predict.</p>
+                    <ul>
+                        <li><strong>Clustering:</strong> Used to group similar data points together. The model identifies natural groupings without prior knowledge of what the groups should be. For example, grouping customers into different segments based on their purchasing behavior.</li>
+                        <li><strong>Anomaly Detection:</strong> Used to identify rare or unusual data points that don't fit the normal pattern. This is often used for security and fraud detection. For example, flagging a credit card transaction that is significantly different from a user's normal spending habits.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- CHOOSING THE RIGHT ML TECHNIQUE TABLE -->
+            <div class="section">
+                <h2 class="section-title">Choosing the Right Tool for the Job</h2>
+                <p>Use this table as a quick guide to select the most appropriate ML technique for a given problem.</p>
+                <div class="comparison-table">
+                    <div class="comparison-row">
+                        <div class="comparison-header">Problem Type</div>
+                        <div class="comparison-header">Appropriate ML Technique</div>
+                        <div class="comparison-header">Examples</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell">Predicting a continuous value (e.g., a number)</div>
+                        <div class="comparison-cell"><strong>Regression</strong> (Supervised Learning)</div>
+                        <div class="comparison-cell">Forecasting sales for next quarter, predicting a house price, estimating a person's age based on a photo.</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell">Assigning data to a category</div>
+                        <div class="comparison-cell"><strong>Classification</strong> (Supervised Learning)</div>
+                        <div class="comparison-cell">Detecting spam emails, identifying a disease from a medical scan, determining if a customer will churn.</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell">Finding hidden groups in data</div>
+                        <div class="comparison-cell"><strong>Clustering</strong> (Unsupervised Learning)</div>
+                        <div class="comparison-cell">Segmenting customers into groups for marketing, grouping similar news articles, organizing genes with similar functions.</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell">Identifying unusual or rare data points</div>
+                        <div class="comparison-cell"><strong>Anomaly Detection</strong> (Unsupervised Learning)</div>
+                        <div class="comparison-cell">Fraud detection in banking, identifying faulty equipment on a factory floor, spotting network intrusions.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
