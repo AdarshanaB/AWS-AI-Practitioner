@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 2 - Part 5 - ML Development Lifecycle | Course Series by Adarshana</title>
+    <meta name="description" content="A step-by-step guide to the machine learning development lifecycle, from data collection to model deployment.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 2 - PART 5</div>
+                <h1 class="course-title">ML Development Lifecycle</h1>
+                <p class="course-subtitle">A step-by-step guide to building a machine learning model</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">📖</div>
+                        <span>25 min read</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🎯</div>
+                        <span>Intermediate</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">💡</div>
+                        <span>Process & Workflow</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <p>Building a machine learning model isn't a single action—it's a process. The <strong>ML development lifecycle</strong> is a series of stages that a data scientist or ML engineer follows to build and deploy an effective model. Understanding this lifecycle is key to building successful AI solutions.</p>
+                <p>The process is often an iterative cycle, where you may go back and forth between stages to improve your model.</p>
+                
+                <h3 class="subsection-title">The ML Pipeline Flow</h3>
+                <p>Here's a high-level view of the process:</p>
+                
+                <ul>
+                    <li><strong>Data &rarr; Data Prep &rarr; Model Training &rarr; Evaluation &rarr; Deployment &rarr; Monitoring</strong></li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">1. Data Collection</h2>
+                <p>This is the starting point. A machine learning model is only as good as the data it's trained on. This stage involves finding and gathering the right data from various sources, such as databases, APIs, web scraping, or public datasets. The data you collect must be relevant to the problem you are trying to solve.</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">2. Exploratory Data Analysis (EDA)</h2>
+                <p>Once you have the data, you need to understand it. EDA is the process of analyzing data to summarize its main characteristics. It's a detective-like phase where you look for patterns, spot anomalies, and find missing values. This helps you figure out the best way to clean and prepare your data for the next step.</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">3. Data Pre-processing</h2>
+                <p>Real-world data is messy. In this stage, you clean and prepare the raw data. This can include handling missing values, removing duplicates, and formatting the data so that a machine learning algorithm can understand it. For example, you might convert text to numbers or scale different columns to the same range.</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">4. Feature Engineering</h2>
+                <p>This is one of the most creative and critical steps. <strong>Features</strong> are the raw data points that a model uses to make a prediction. Feature engineering is the process of creating new features from existing ones to improve the model's performance. For example, if you have a dataset with a date of birth, you might create a new feature called "age" or "day of the week" that could be more useful to the model.</p>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">5. Model Training</h2>
+                <p>In this step, you take the prepared data and "feed" it into a chosen algorithm. The algorithm learns patterns and relationships from the data. Think of it like a student studying a textbook. The training process involves the algorithm adjusting its internal parameters to minimize errors between its predictions and the actual results in the training data.</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">6. Hyperparameter Tuning</h2>
+                <p>A machine learning model has two types of settings:
+                    <ul>
+                        <li><strong>Parameters:</strong> These are learned during training.</li>
+                        <li><strong>Hyperparameters:</strong> These are set before training begins and control the learning process itself (e.g., how fast the model learns).</li>
+                    </ul>
+                <strong>Hyperparameter tuning</strong> is the process of experimenting with different hyperparameter values to find the combination that results in the best-performing model.</p>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">7. Evaluation</h2>
+                <p>Once a model is trained, you need to know how well it performs on new, unseen data. In the evaluation phase, you use a separate "test set" to measure the model's accuracy. Common metrics like accuracy, precision, and recall are used to determine if the model is good enough for real-world use. This step is crucial for avoiding a common problem called <strong>overfitting</strong>, where a model performs well on training data but poorly on new data.</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">8. Deployment & Monitoring</h2>
+                <p>A trained and evaluated model is useless if it's not accessible. <strong>Deployment</strong> is the process of making the model available to other applications, often as an API endpoint. This allows other services to send data to the model and receive predictions. Once deployed, the model must be **monitored**. This means continuously checking its performance in the real world to ensure it remains accurate and doesn't degrade over time, a problem known as <strong>model drift</strong>.</p>
+            </div>
+            
+            <!-- Added Image Section -->
+            <div class="section" style="text-align:center;">
+                <img src="https://raw.githubusercontent.com/AdarshanaB/AWS-AI-Practitioner/main/Fundamentals%20of%20AI%20and%20ML/DAY2/MLDev.jpg" 
+                     alt="ML Development Lifecycle Diagram"
+                     style="max-width:100%; height:auto; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.15);" />
+            </div>
+            
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>
