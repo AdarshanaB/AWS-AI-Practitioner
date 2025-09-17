@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 2 - Part 7 - MLOps Core Concepts | Course Series by Adarshana</title>
+    <meta name="description" content="A detailed look into the core principles and concepts of Machine Learning Operations (MLOps).">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 2 - PART 7</div>
+                <h1 class="course-title">MLOps Core Concepts</h1>
+                <p class="course-subtitle">Going beyond the pipeline to operationalize your models</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">📖</div>
+                        <span>25 min read</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🎯</div>
+                        <span>Intermediate</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">💡</div>
+                        <span>Process & Workflow</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <p>Now that we have a solid understanding of the ML development lifecycle and the need for MLOps, let's dive into some of the fundamental concepts that make MLOps a powerful practice. These principles are what enable teams to build, deploy, and manage machine learning models reliably at scale.</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Fundamental Concepts of MLOps</h2>
+                
+                <h3 class="subsection-title">1. Experimentation</h3>
+                <p>In the early stages of model development, data scientists often run countless experiments with different algorithms, features, and hyperparameters. MLOps provides a structured way to manage these experiments. It ensures that every experiment is tracked, logged, and reproducible, so you can easily compare results and revert to a previous version if needed. This prevents the "wild west" of individual data scientists working in silos and makes the process organized and collaborative.</p>
+            </div>
+            
+            <div class="section">
+                <h3 class="subsection-title">2. Repeatable Processes</h3>
+                <p>The core of MLOps is automation. A repeatable process is a workflow that can be run reliably and consistently, without manual intervention. This includes everything from data ingestion and cleaning to model training and deployment. By automating these steps, MLOps ensures that every time you retrain or update a model, the process is consistent, reducing errors and saving time.</p>
+            </div>
+            
+            <div class="section">
+                <h3 class="subsection-title">3. Scalable Systems</h3>
+                <p>A model that works on a small dataset might fail when faced with a flood of real-world data. MLOps focuses on building systems that can scale both horizontally (handling more data) and vertically (handling more users). This means using scalable infrastructure, like cloud services, and designing pipelines that can process large volumes of data and serve predictions to a large number of users without a drop in performance.</p>
+            </div>
+
+            <div class="section">
+                <h3 class="subsection-title">4. Managing Technical Debt</h3>
+                <p>In software development, technical debt refers to shortcuts taken to meet a deadline, which can lead to problems later. In ML, technical debt is even more complex. It's not just about code; it's also about the model itself. As the real-world data changes, your model may become outdated and lose accuracy, a form of technical debt known as "model decay." MLOps helps manage this by creating a disciplined process for continuous monitoring and improvement.</p>
+            </div>
+
+            <div class="section">
+                <h3 class="subsection-title">5. Achieving Production Readiness</h3>
+                <p>A model is not ready for production just because it performs well on a test set. Production readiness involves a series of checks to ensure the model is reliable, secure, and integrated into the overall application. This includes testing the model's performance under different loads, ensuring it can handle various data formats, and setting up logging and security protocols to protect the data and the model.</p>
+            </div>
+            
+            <div class="section">
+                <h3 class="subsection-title">6. Model Monitoring</h3>
+                <p>Once a model is live, you can't just set it and forget it. **Model monitoring** is the practice of continuously tracking the model's performance in real-time. You'll monitor for two main types of issues:</p>
+                <ul>
+                    <li><strong>Performance Degradation:</strong> Is the model's accuracy, precision, or other metrics dropping over time? This can happen as the real-world data changes.</li>
+                    <li><strong>Data Drift:</strong> Has the distribution of the incoming data changed from the data the model was trained on? This is a key indicator that the model may need to be retrained.</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h3 class="subsection-title">7. Model Re-training</h3>
+                <p>When monitoring reveals that a model's performance is degrading, **model re-training** is the solution. MLOps provides the automated pipelines to do this seamlessly. Instead of manually rebuilding the model from scratch, an automated system can pull the new data, re-run the training pipeline, and deploy the updated model, ensuring your AI solution stays relevant and accurate over time.</p>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
