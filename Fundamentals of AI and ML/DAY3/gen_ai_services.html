@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 3 - Part 3 - AWS Infrastructure for Generative AI | Course Series by Adarshana</title>
+    <meta name="description" content="Describing key AWS services like Amazon Bedrock, SageMaker JumpStart, and Amazon Q for building Generative AI applications.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .service-box {
+            background-color: #f8faff;
+            border: 1px solid #e6e9ff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+        
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4a4a4a;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .service-icon {
+            font-size: 20px;
+            color: #667eea;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #764ba2;
+            font-weight: 600;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 3 - PART 3</div>
+                <h1 class="course-title">AWS Infrastructure for Generative AI Applications</h1>
+                <p class="course-subtitle">Identifying the key services for model access, development, and deployment</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">☁️</div>
+                        <span>Core Services</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">⚙️</div>
+                        <span>Development Tools</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">💼</div>
+                        <span>Enterprise Focus</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <p>AWS provides a comprehensive, three-layer stack for Generative AI: the bottom layer provides the computational power (NVIDIA and specialized AWS Trainium/Inferentia chips), the middle layer consists of core ML services (SageMaker), and the top layer provides managed Foundation Model access (Bedrock and Q). Understanding these top-layer services is key to the AWS AI Practitioner role.</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">1. Amazon Bedrock: The Central Hub for Foundation Models</h2>
+                <p><strong>Amazon Bedrock</strong> is a fully managed service that offers a choice of high-performing Foundation Models (FMs) from leading AI companies (e.g., Anthropic, Cohere, Meta, and Amazon's own Titan family) through a single API.</p>
+
+                <div class="service-box">
+                    <div class="service-title"><span class="service-icon">🌐</span> Bedrock Key Features</div>
+                    <ul>
+                        <li>
+                            <strong>Managed Access:</strong> Developers can easily experiment with and switch between various FMs (e.g., Claude, Llama 2, Titan) without managing the underlying GPU infrastructure.
+                        </li>
+                        <li>
+                            <strong>Serverless Inference:</strong> Inference is executed serverlessly. You don't need to provision, manage, or scale endpoints, significantly simplifying deployment and lowering operational overhead.
+                        </li>
+                        <li>
+                            <strong>Knowledge Bases for Amazon Bedrock (RAG):</strong> This feature automates the process of connecting FMs to internal company data stored in data sources like Amazon S3 and Amazon OpenSearch Service. It handles the **chunking**, **embedding** generation, and retrieval process, essential for reducing **hallucinations** and grounding answers in proprietary data.
+                        </li>
+                        <li>
+                            <strong>Model Customization:</strong> Supports **Fine-Tuning** and **Continued Pre-Training** of FMs using proprietary data to enhance their performance for specific tasks or domains.
+                        </li>
+                    </ul>
+                    <p><strong>Practitioner Takeaway:</strong> Bedrock is the easiest, fastest, and most scalable way to consume pre-trained, third-party, and Amazon FMs.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">2. Amazon SageMaker JumpStart: The Development and Customization Toolkit</h2>
+                <p><strong>Amazon SageMaker JumpStart</strong> is an ML hub within the Amazon SageMaker ecosystem that helps accelerate ML development. While Bedrock focuses on *managed* consumption of FMs, JumpStart focuses on providing resources for users who want more **control** over the underlying model and infrastructure.</p>
+
+                <div class="service-box">
+                    <div class="service-title"><span class="service-icon">🛠️</span> JumpStart Key Features</div>
+                    <ul>
+                        <li>
+                            <strong>Pre-Trained Models:</strong> Provides one-click deployment and training for a wide range of popular open-source models (e.g., models from Hugging Face) and pre-trained solutions.
+                        </li>
+                        <li>
+                            <strong>Notebooks and Examples:</strong> Offers curated Jupyter notebooks that demonstrate how to use and fine-tune various models, making it ideal for learning and experimentation.
+                        </li>
+                        <li>
+                            <strong>Full Control over Infrastructure:</strong> Unlike Bedrock, when you deploy via JumpStart, the model runs on a dedicated SageMaker Endpoint, giving you granular control over instance types, auto-scaling, and security configurations.
+                        </li>
+                        <li>
+                            <strong>Model Customization:</strong> Integrates tightly with SageMaker's full suite of tools for distributed training and advanced fine-tuning techniques (like LoRA) on custom infrastructure.
+                        </li>
+                    </ul>
+                    <p><strong>Practitioner Takeaway:</strong> Use JumpStart when you need to deploy and fine-tune a specific open-source model and require fine-grained control over the infrastructure or deep customization.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">3. Amazon Q: Enterprise-Grade Generative AI Assistant</h2>
+                <p><strong>Amazon Q</strong> is a generative AI-powered assistant specifically designed for work, offering capabilities tailored to enterprise users across multiple platforms (e.g., AWS Console, Amazon Connect, Slack, third-party websites). It is built on top of Bedrock and specialized FMs but provides a ready-to-use application layer.</p>
+
+                <div class="service-box">
+                    <div class="service-title"><span class="service-icon">🙋</span> Amazon Q Key Features</div>
+                    <ul>
+                        <li>
+                            <strong>Secure Enterprise Grounding:</strong> Q connects securely to corporate data sources (e.g., SharePoint, Confluence, internal S3 buckets). When a user asks a question, Q uses RAG to pull context from those *authorized* sources before generating an answer.
+                        </li>
+                        <li>
+                            <strong>Role and Permission Awareness:</strong> Q respects user permissions. It will only provide answers based on documents the specific user is authorized to access, ensuring data security and compliance.
+                        </li>
+                        <li>
+                            <strong>Multiple Use Cases:</strong> Acts as a coding assistant (within IDEs), a business analyst (for querying business intelligence data), and a customer service expert (providing instantaneous internal support).
+                        </li>
+                        <li>
+                            <strong>Conversation History and Context:</strong> Maintains conversational context over time, allowing for complex follow-up questions relevant to previous turns.
+                        </li>
+                    </ul>
+                    <p><strong>Practitioner Takeaway:</strong> Amazon Q is the turn-key solution for deploying a secure, personalized Generative AI assistant within your enterprise environment.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">4. PartyRock: The Prototyping Playground</h2>
+                <p><strong>PartyRock</strong> (an Amazon Bedrock Playground) is a simple, visual, no-code tool designed for experimentation and rapid application building. It’s an excellent environment for AI Practitioners to quickly demonstrate concepts or build personal tools without writing complex code.</p>
+                
+                <div class="service-box">
+                    <div class="service-title"><span class="service-icon">🎨</span> PartyRock Key Features</div>
+                    <ul>
+                        <li>
+                            <strong>No-Code App Creation:</strong> Users drag and drop components (widgets) to create simple, functional Generative AI applications using models available via Bedrock.
+                        </li>
+                        <li>
+                            <strong>Instant Prototyping:</strong> Ideal for non-developers, product managers, or learners to quickly test different prompts, models, and workflows.
+                        </li>
+                        <li>
+                            <strong>Shareability:</strong> Applications built in PartyRock can be easily shared with others, facilitating collaboration and demonstrations.
+                        </li>
+                        <li>
+                            <strong>Learning Tool:</strong> Provides a safe and easy environment to understand the fundamentals of prompt engineering and model chaining (connecting model outputs as inputs to other steps).
+                        </li>
+                    </ul>
+                    <p><strong>Practitioner Takeaway:</strong> Use PartyRock to quickly prove the viability of a Generative AI idea before dedicating development resources to a full Bedrock or SageMaker implementation.</p>
+                </div>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
