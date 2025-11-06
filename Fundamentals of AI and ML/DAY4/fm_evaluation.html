@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 4 - Part 3 - Model Performance Evaluation | Course Series by Adarshana</title>
+    <meta name="description" content="Methods and metrics for evaluating Foundation Model performance, including ROUGE, BLEU, and business alignment.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            /* Consistent Background */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #764ba2; /* Consistent strong color */
+            font-weight: 600;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+        
+        .metric-box {
+            border-left: 4px solid #667eea; 
+            background-color: #f3f7ff;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 4 - PART 3</div>
+                <h1 class="course-title">Foundation Model Evaluation</h1>
+                <p class="course-subtitle">Assessing Performance and Business Value</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">⚖️</div>
+                        <span>Evaluation Approaches</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">📊</div>
+                        <span>Key Metrics</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">💰</div>
+                        <span>Business Alignment</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 1: Approaches to Evaluate Foundation Model Performance -->
+            <div class="section">
+                <h2 class="section-title">1. Approaches to Model Evaluation</h2>
+                <p>Evaluating the true capability of a Foundation Model requires both automated, quantitative testing and subjective, qualitative assessment.</p>
+                
+                <h3 class="subsection-title">Human Evaluation (The Gold Standard)</h3>
+                <p>While slow and expensive, **human evaluation** is often the most reliable measure, especially for complex or creative tasks (e.g., creative writing, dialogue generation, code quality). Humans judge:
+                </p>
+                <ul>
+                    <li><strong>Helpfulness and Safety:</strong> Does the model follow instructions and avoid toxic or harmful outputs?</li>
+                    <li><strong>Factuality/Hallucination:</strong> Is the information provided accurate and grounded in reality?</li>
+                    <li><strong>Fluency and Coherence:</strong> Is the text well-written and natural-sounding?</li>
+                </ul>
+
+                <h3 class="subsection-title">Benchmark Datasets (Quantitative Testing)</h3>
+                <p>These are standardized collections of tasks used to compare different models head-to-head. Examples include:</p>
+                <ul>
+                    <li><strong>MMLU (Massive Multitask Language Understanding):</strong> Tests knowledge across 57 academic subjects.</li>
+                    <li><strong>HELM (Holistic Evaluation of Language Models):</strong> A framework that emphasizes multiple metrics beyond accuracy, including robustness, bias, and efficiency.</li>
+                    <li><strong>SuperGLUE:</strong> A difficult set of established NLP tasks used to test a model's linguistic comprehension and reasoning.</li>
+                </ul>
+            </div>
+            
+            <!-- Section 2: Relevant Metrics to Assess Performance -->
+            <div class="section">
+                <h2 class="section-title">2. Key Quantitative Metrics</h2>
+                <p>These metrics compare the model's generated text (candidate) against a human-written reference text (ground truth).</p>
+
+                <div class="metric-box">
+                    <h3 class="subsection-title">ROUGE (Recall-Oriented Understudy for Gisting Evaluation)</h3>
+                    <p>Primarily used for **summarization** tasks. It measures the overlap (recall) of **n-grams** (sequences of $n$ words) between the candidate summary and the reference summary. </p>
+                    <ul>
+                        <li><strong>ROUGE-N:</strong> Compares overlap of $n$-word units (e.g., ROUGE-1 for single words, ROUGE-2 for pairs of words).</li>
+                        <li><strong>ROUGE-L:</strong> Based on the longest common subsequence of words, favoring fluidity.</li>
+                    </ul>
+                </div>
+
+                <div class="metric-box">
+                    <h3 class="subsection-title">BLEU (Bilingual Evaluation Understudy)</h3>
+                    <p>Primarily used for **machine translation**. It measures the precision of $n$-grams between the candidate translation and one or more reference translations. A higher score means a better match with professional human translations.</p>
+                </div>
+
+                <div class="metric-box">
+                    <h3 class="subsection-title">BERTScore</h3>
+                    <p>A modern, contextualized metric that addresses the limitations of ROUGE and BLEU. Instead of just counting exact word matches, BERTScore uses **BERT embeddings** to measure the **semantic similarity** between words in the candidate and reference texts. This means it can reward synonyms and paraphrasing, providing a more human-like measure of quality.</p>
+                </div>
+            </div>
+            
+            <!-- Section 3: Aligning Performance with Business Objectives -->
+            <div class="section">
+                <h2 class="section-title">3. Meeting Business Objectives</h2>
+                <p>Technical performance metrics are meaningless if the model doesn't deliver tangible business value. Evaluation must tie back to key business indicators (KBIs).</p>
+
+                <ul>
+                    <li>
+                        <strong>Productivity (Efficiency):</strong> Evaluate the model's impact on time savings.
+                        <ul>
+                            <li>*Metric:* Reduction in average time to draft a document (e.g., $\text{30 minutes} \rightarrow \text{5 minutes}$).</li>
+                            <li>*Goal:* Automating tedious tasks to free up employee time for higher-value work.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>User Engagement (Adoption):</strong> Measure how well the model is integrated and used by the target audience.
+                        <ul>
+                            <li>*Metric:* Daily/Monthly Active Users (DAU/MAU) for the AI tool, or reduction in user frustration (e.g., support ticket volume).</li>
+                            <li>*Goal:* Ensuring the tool is intuitive and provides genuine value to end-users.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Task Engineering (Specific Accuracy):</strong> Focus on the model's performance on the exact business task.
+                        <ul>
+                            <li>*Metric:* Classification accuracy for sales leads, or error rate in generated code/legal clauses.</li>
+                            <li>*Goal:* Achieving a predefined accuracy threshold that makes the output commercially viable (e.g., $\text{>95\%}$ accuracy is required for automated compliance checks).</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
