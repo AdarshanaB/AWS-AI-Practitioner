@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 3 - Part 6 - Customization Costs and Agents | Course Series by Adarshana</title>
+    <meta name="description" content="Analyzing the cost tradeoffs of customization methods and the role of agents in multi-step AI tasks.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            /* Consistent Background */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #764ba2;
+            font-weight: 600;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        
+        /* Table Styling for Cost Tradeoffs */
+        .cost-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .cost-table th, .cost-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .cost-table th {
+            background-color: #f7f7ff;
+            font-weight: 600;
+            color: #667eea;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .cost-table tr:last-child td {
+            border-bottom: none;
+        }
+        .cost-table tr:hover {
+            background-color: #fcfcff;
+        }
+
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 3 - PART 6</div>
+                <h1 class="course-title">Customization, Cost Tradeoffs, and AI Agents</h1>
+                <p class="course-subtitle">Choosing your vector database and orchestrating multi-step workflows</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">💾</div>
+                        <span>Vector Storage</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">⚖️</div>
+                        <span>Cost Analysis</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🤖</div>
+                        <span>AI Agents</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 1: Vector Database Services -->
+            <div class="section">
+                <h2 class="section-title">1. AWS Services for Vector Database Storage (Embeddings)</h2>
+                <p>The **Retrieval Augmented Generation (RAG)** pattern relies on efficient storage and retrieval of vector embeddings. AWS provides several services, offering both dedicated and integrated vector storage capabilities.</p>
+                
+                <h3 class="subsection-title">Vector Database Options</h3>
+                <p>These services allow for **vector search**—finding the closest related documents (by semantic similarity) to a user's query vector.</p>
+
+                <ul>
+                    <li>
+                        <strong>Amazon OpenSearch Service:</strong> Offers built-in support for **k-Nearest Neighbor (k-NN) search** which is ideal for high-scale, low-latency vector indexing and retrieval. It's often the default choice for pure vector search in RAG architectures.
+                    </li>
+                    <li>
+                        <strong>Amazon Aurora (PostgreSQL):</strong> When configured with the **pgvector** extension, Aurora's PostgreSQL-compatible edition can store and query vectors. This is beneficial if you need to store both relational data and vector data in the *same* operational database.
+                    </li>
+                    <li>
+                        <strong>Amazon RDS for PostgreSQL:</strong> Similar to Aurora, standard Amazon RDS running PostgreSQL can use the **pgvector** extension. This is a cost-effective, familiar solution if your team is already skilled in PostgreSQL administration.
+                    </li>
+                    <li>
+                        <strong>Amazon Neptune:</strong> Primarily a **graph database** service, Neptune is useful when your data relationships are highly complex (e.g., social networks or knowledge graphs). It can store embeddings related to nodes and edges for advanced graph-based similarity searches.
+                    </li>
+                    <li>
+                        <strong>Amazon DocumentDB (with MongoDB compatibility):</strong> While not a primary vector store, it can be used for storing unstructured text or JSON documents. Vector storage capability is being integrated into various parts of AWS's data portfolio to simplify RAG deployment.
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Section 2: Customization Cost Tradeoffs -->
+            <div class="section">
+                <h2 class="section-title">2. Cost Tradeoffs of Foundation Model Customization</h2>
+                <p>Tailoring a Foundation Model (FM) to specific enterprise tasks involves choosing from a spectrum of approaches, each with distinct costs, effort, and performance impacts. The primary tradeoff is between the **Initial Setup Cost** (training/data preparation) and the **Per-Inference Cost** (runtime/API usage).</p>
+                
+                <table class="cost-table">
+                    <thead>
+                        <tr>
+                            <th>Approach</th>
+                            <th>Effort / Setup Cost</th>
+                            <th>Runtime Cost / Latency</th>
+                            <th>Benefit / Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. Pre-training</strong></td>
+                            <td>**Highest** (Massive data, months of GPU time)</td>
+                            <td>Standard (Lower volume models save on runtime)</td>
+                            <td>Creating a new base model. Only done by model providers.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Fine-tuning</strong></td>
+                            <td>**High** (Annotated data, weeks of GPU time)</td>
+                            <td>Medium (Requires dedicated infrastructure/reserved capacity)</td>
+                            <td>Shifts the model's core behavior/style. Best for proprietary jargon or strict formats.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Retrieval Augmented Generation (RAG)</strong></td>
+                            <td>**Medium** (Data processing/vector indexing)</td>
+                            <td>**High** (Two API calls per request: Embeddings + FM inference)</td>
+                            <td>Grounds model in external, up-to-date data. **Best for factuality and knowledge retrieval.**</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. In-Context Learning (Prompting)</strong></td>
+                            <td>**Lowest** (Zero-shot or few-shot examples in the prompt)</td>
+                            <td>**Lowest** (One API call)</td>
+                            <td>Simple task definition, style guidance, and quick iteration. **Best for rapid prototyping and simple tasks.**</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="mt-4">In a production environment, most companies use a combination of **RAG** and **In-Context Learning** to balance cost efficiency and grounding accuracy.</p>
+            </div>
+            
+            <!-- Section 3: AI Agents -->
+            <div class="section">
+                <h2 class="section-title">3. The Role of Agents in Multi-Step Tasks</h2>
+                <p>For complex business processes that require executing a sequence of actions, a Foundation Model alone is often insufficient. **AI Agents** are introduced to manage these multi-step tasks.</p>
+
+                <h3 class="subsection-title">What is an Agent?</h3>
+                <p>An Agent is a system that uses a Foundation Model as its "brain" (the reasoning engine) to determine the next step in a process, often involving external tools or APIs. It translates a high-level goal into a series of executable actions.</p>
+                
+                <h3 class="subsection-title">Agent Workflow for Multi-Step Tasks</h3>
+                <ol>
+                    <li>
+                        <strong>User Goal:</strong> User provides a complex, high-level request (e.g., "Find the cheapest flight from Boston to London next month and book it.").
+                    </li>
+                    <li>
+                        <strong>Planning/Reasoning:</strong> The Agent (FM) breaks the goal down into sequential steps (e.g., 1. Search flight API, 2. Filter results for cheapest, 3. Check seat availability, 4. Call booking API).
+                    </li>
+                    <li>
+                        <strong>Tool Invocation:</strong> The Agent selects and executes the appropriate tool (e.g., calling a REST API for flight search) based on its reasoning.
+                    </li>
+                    <li>
+                        <strong>Observation and Iteration:</strong> The Agent receives the result from the tool (the observation) and uses that information to adjust its plan and determine the next action. This process repeats until the goal is achieved.
+                    </li>
+                </ol>
+
+                <h3 class="subsection-title">Agents for Amazon Bedrock</h3>
+                <p>AWS simplifies this process with **Agents for Amazon Bedrock**. This service allows developers to:</p>
+                <ul>
+                    <li>
+                        **Define Tools (Action Groups):** Register custom business functions (APIs) and specify their capabilities using natural language descriptions.
+                    </li>
+                    <li>
+                        **Automate Reasoning:** Bedrock's agent handles the complex logic of planning, tool selection, and execution loop based on the prompt, reducing developer overhead.
+                    </li>
+                    <li>
+                        **Orchestrate Workflows:** Agents can perform tasks that require dynamic decision-making and access to external, real-time data or fulfillment systems (e.g., order placement, database updates).
+                    </li>
+                </ul>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
