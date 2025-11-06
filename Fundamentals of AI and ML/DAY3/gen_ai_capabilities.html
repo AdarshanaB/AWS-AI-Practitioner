@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 3 - Part 2 - Generative AI: Capabilities, Limitations, and Business Value | Course Series by Adarshana</title>
+    <meta name="description" content="Analyzing the benefits, risks, selection criteria, and business metrics for Generative AI solutions.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #764ba2;
+            font-weight: 600;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 3 - PART 2</div>
+                <h1 class="course-title">Generative AI: Capabilities, Limitations, and Selection</h1>
+                <p class="course-subtitle">Assessing business fitness and measuring the true ROI</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">⚖️</div>
+                        <span>Pros & Cons</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🔍</div>
+                        <span>Model Selection</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">💰</div>
+                        <span>Business Value</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <p>Before adopting Generative AI, organizations must perform a rigorous assessment of its advantages, risks, and alignment with business objectives. A successful project hinges on managing the model's limitations while maximizing its unique capabilities.</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">1. Advantages of Generative AI Solutions</h2>
+                <p>Generative AI offers unique benefits that surpass traditional, narrow AI models, primarily due to the versatility of Foundation Models (FMs).</p>
+                
+                <ul>
+                    <li>
+                        <strong>Adaptability (Generalization):</strong> FMs can perform entirely new tasks they weren't explicitly trained for, simply by being given a new prompt. This allows for rapid prototyping and iteration across multiple business domains (e.g., the same model can summarize a document, translate a phrase, and generate a marketing slogan). This is often called **zero-shot** or **few-shot learning**.
+                    </li>
+                    <li>
+                        <strong>Responsiveness (Speed to Market):</strong> Because FMs are pre-trained, development time is dramatically reduced. Instead of months spent collecting data and training a model from scratch, developers can achieve a functional prototype in days using prompt engineering or minimal fine-tuning.
+                    </li>
+                    <li>
+                        <strong>Simplicity (Standardized Interface):</strong> The primary interaction is through natural language prompts. This simplifies the user experience for developers and end-users, requiring less specialized coding knowledge to extract value from the models.
+                    </li>
+                    <li>
+                        <strong>Creative Output:</strong> Unlike discriminative models that only classify or predict a number, generative models create novel, human-quality content, unlocking new product lines and efficiency gains in content creation, design, and code development.
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">2. Disadvantages and Limitations of Generative AI</h2>
+                <p>The complexity of FMs introduces significant risks that must be actively managed in production environments (MLOps).</p>
+
+                <ul>
+                    <li>
+                        <strong>Hallucinations:</strong> The tendency for models to confidently generate factually incorrect or nonsensical information. Since models are trained to predict the most statistically probable next token, they can prioritize fluency over truth. This risk is managed through **Retrieval-Augmented Generation (RAG)**.
+                    </li>
+                    <li>
+                        <strong>Inaccuracy and Bias:</strong> While models are often highly accurate on general tasks, they can make subtle errors or perpetuate biases present in their massive training datasets. Errors can be hard to spot without human review.
+                    </li>
+                    <li>
+                        <strong>Interpretability (The Black Box):</strong> Due to their vast scale and transformer architecture, it is incredibly difficult to determine *why* a model made a specific prediction or generated a specific output. This lack of transparency is a major compliance risk in regulated industries.
+                    </li>
+                    <li>
+                        <strong>Nondeterminism (Variability):</strong> Outputs can change slightly even when using the exact same prompt, due to factors like **temperature** (a setting controlling creativity/randomness) or slight differences in parallel processing. While creativity is a benefit, variability complicates automated testing and quality assurance.
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">3. Factors for Generative AI Model Selection</h2>
+                <p>Selecting the right model is a critical MLOps decision that balances capability against cost and infrastructure.</p>
+                
+                <ul>
+                    <li>
+                        <strong>Model Types and Capabilities:</strong>
+                        <ul>
+                            <li><strong>LLMs:</strong> Text generation (chatbots, summarization, code). Factors: Context window size, language support, and instruction-following ability.</li>
+                            <li><strong>Diffusion Models:</strong> Image/Video generation. Factors: Output resolution, generation speed, and photorealism quality.</li>
+                            <li><strong>Multi-modal Models:</strong> Handling mixed inputs (text + image). Factor: Supported input and output combinations.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Performance Requirements:</strong>
+                        <ul>
+                            <li><strong>Latency:</strong> How quickly the model must respond (critical for real-time customer service).</li>
+                            <li><strong>Throughput:</strong> The number of requests the model can handle per second (critical for high-volume batch processing or search indexing).</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Constraints and Cost:</strong> Larger models (more parameters) offer better performance but require significantly more powerful and expensive GPUs for inference, leading to higher **cost per token** and higher overall infrastructure costs.
+                    </li>
+                    <li>
+                        <strong>Compliance and Governance:</strong> Selecting models that support **data residency** requirements (e.g., ensuring data never leaves a specific AWS region) and adherence to ethical guidelines (e.g., filtering toxic content).
+                    </li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">4. Business Value and Metrics for Generative AI</h2>
+                <p>The success of a Gen AI application is measured not just by its output quality, but by its tangible impact on the bottom line.</p>
+
+                <ul>
+                    <li>
+                        <strong>Efficiency and Cost Savings:</strong> Measures like **percentage reduction in manual effort** (e.g., drafting first-pass emails), **reduction in customer handle time** for service agents, or **time saved in code review**.
+                    </li>
+                    <li>
+                        <strong>Cross-Domain Performance:</strong> Measuring the model's ability to seamlessly perform multiple tasks within a single workflow. For example, a single model translating, summarizing, and classifying an incoming support ticket.
+                    </li>
+                    <li>
+                        <strong>Customer Lifetime Value (CLV) and Average Revenue Per User (ARPU):</strong> These are key metrics for customer-facing applications. If the Gen AI-powered chatbot provides better service, it may lead to higher retention, thus increasing CLV and ARPU.
+                    </li>
+                    <li>
+                        <strong>Conversion Rate:</strong> Used in marketing/sales applications. A model generating more compelling, personalized product descriptions should lead to a higher click-through or purchase conversion rate.
+                    </li>
+                    <li>
+                        <strong>Application-Specific Accuracy:</strong> While raw performance metrics (like AUC) are foundational, the final metric must reflect the business goal. For a legal summarization tool, the metric might be **Precision on Critical Fact Extraction** (a measure of accuracy for the specific task).
+                    </li>
+                </ul>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
