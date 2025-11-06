@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 2 - Part 8 - Model Sourcing, Deployment, & AWS | Course Series by Adarshana</title>
+    <meta name="description" content="Understanding where ML models come from, how they are deployed, and the role of AWS services.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 2 - PART 8</div>
+                <h1 class="course-title">Model Sourcing, Deployment, & AWS</h1>
+                <p class="course-subtitle">Finding, serving, and automating models with cloud tools</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">📖</div>
+                        <span>25 min read</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🎯</div>
+                        <span>Intermediate</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">💡</div>
+                        <span>Architecture & Tools</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <p>The journey of an ML model involves several key architectural decisions: deciding where the model comes from, choosing the best way to deploy it to users, and leveraging cloud services to automate and manage the entire lifecycle.</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">1. Understand Sources of ML Models</h2>
+                <p>Before any MLOps pipeline begins, a decision must be made: are we building a new model, or using one that already exists?</p>
+                
+                <h3 class="subsection-title">Open Source Pre-trained Models</h3>
+                <p>These models have already been trained on massive, public datasets (like Wikipedia text or millions of images). They are excellent for tasks that are common in the industry.</p>
+                <ul>
+                    <li><strong>Benefit:</strong> Saves significant time and compute resources. They are often highly optimized and require minimal effort to get working.</li>
+                    <li><strong>Use Case:</strong> You use them directly or, more commonly, use **transfer learning**, where you fine-tune the pre-trained model on your smaller, specific dataset.</li>
+                    <li><strong>Examples:</strong> Models from Hugging Face for Natural Language Processing (NLP), or image classification models from TensorFlow Hub.</li>
+                </ul>
+
+                <h3 class="subsection-title">Training Custom Models</h3>
+                <p>This involves building and training a model from scratch using your proprietary data. This is necessary when your problem is unique or when pre-trained models don't meet the required accuracy or performance.</p>
+                <ul>
+                    <li><strong>Benefit:</strong> Highest potential accuracy for specialized tasks. Complete control over architecture and data usage.</li>
+                    <li><strong>Requirement:</strong> Demands extensive data collection, feature engineering, high computational power, and rigorous MLOps practices to manage complexity.</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">2. Methods to Use a Model in Production</h2>
+                <p>Once a model is trained and validated, it needs to be accessible to other applications or users. The two main deployment methods balance control against operational effort.</p>
+
+                <h3 class="subsection-title">Managed API Service (e.g., AWS SageMaker Endpoint)</h3>
+                <p>This is the cloud-native approach. The model is uploaded to a platform that handles all the operational tasks automatically.</p>
+                <ul>
+                    <li><strong>How it works:</strong> The cloud provider (like AWS) hosts the model, creates a dedicated REST API endpoint, and automatically manages scaling, load balancing, health checks, and infrastructure provisioning.</li>
+                    <li><strong>Pros:</strong> **Low operational overhead**, fast time-to-market, automatic scaling to handle varying traffic.</li>
+                    <li><strong>Cons:</strong> Less flexibility for highly customized deployment logic or unusual networking requirements.</li>
+                </ul>
+                
+                <h3 class="subsection-title">Self-Hosted API (e.g., using EC2 or Kubernetes)</h3>
+                <p>The user packages the model with a web framework (like Flask or FastAPI) and deploys it onto self-managed infrastructure (Virtual Machines or container orchestrators).</p>
+                <ul>
+                    <li><strong>How it works:</strong> The organization controls the virtual machines (EC2) or Kubernetes cluster (EKS) where the model is run. They handle all the configuration and scaling.</li>
+                    <li><strong>Pros:</strong> **Maximum control** over the environment, networking, and security. Potentially cheaper for very high, consistent load.</li>
+                    <li><strong>Cons:</strong> **High operational burden**; requires dedicated DevOps/MLOps expertise to manage scaling, updates, and reliability.</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">3. Relevant AWS Services for the ML Pipeline</h2>
+                <p>AWS offers **Amazon SageMaker** as its primary service for the end-to-end ML workflow, encompassing tools for nearly every stage of the pipeline.</p>
+                
+                <h3 class="subsection-title">Data Preparation and Feature Management</h3>
+                <ul>
+                    <li><strong>Amazon SageMaker Data Wrangler:</strong> A visual tool used for data exploration, aggregation, and cleaning (EDA and Pre-processing stages).</li>
+                    <li><strong>Amazon SageMaker Feature Store:</strong> A centralized repository for storing, updating, sharing, and serving machine learning features. Ensures the same features used during training are used for real-time inference, solving the **training-serving skew** problem.</li>
+                </ul>
+
+                <h3 class="subsection-title">Model Training, Tracking, and Deployment</h3>
+                <ul>
+                    <li><strong>Amazon SageMaker:</strong> The comprehensive platform used for launching **Training Jobs** (model training stage) and managing **Experiments** (experimentation stage).</li>
+                    <li><strong>Amazon SageMaker Endpoints:</strong> The service used for deploying models as a **Managed API Service** for real-time inference (deployment stage).</li>
+                </ul>
+
+                <h3 class="subsection-title">Monitoring and Governance</h3>
+                <ul>
+                    <li><strong>Amazon SageMaker Model Monitor:</strong> Automatically detects data drift and model quality drift in real-time on deployed models (model monitoring stage).</li>
+                    <li><strong>Amazon SageMaker Pipelines:</strong> Used to define and orchestrate repeatable, automated CI/CD workflows for retraining and deployment (repeatable processes stage).</li>
+                </ul>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
