@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 3 - Part 5 - FM Application Design and RAG Deep Dive | Course Series by Adarshana</title>
+    <meta name="description" content="Model Selection, Parameter Tuning, and a Deep Dive into Retrieval Augmented Generation (RAG).">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            /* Consistent Background */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #764ba2;
+            font-weight: 600;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+        
+        /* RAG specific styling within this new theme */
+        .rag-definition {
+            border: 2px solid #667eea;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f7f7ff;
+            margin-top: 15px;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 3 - PART 5</div>
+                <h1 class="course-title">Foundation Model Application Design and RAG Deep Dive</h1>
+                <p class="course-subtitle">Model Selection, Parameter Tuning, and a Deep Dive into Retrieval Augmented Generation (RAG)</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">⚙️</div>
+                        <span>Parameters</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🧠</div>
+                        <span>Model Selection</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">📚</div>
+                        <span>RAG Architecture</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 1: Model Selection Criteria -->
+            <div class="section">
+                <h2 class="section-title">1. Identifying Selection Criteria for Pre-Trained Models</h2>
+                <p>Choosing the right **Foundation Model (FM)** is a critical design decision that impacts every aspect of your application. The best model balances capability with operational constraints.</p>
+                
+                <h3 class="subsection-title">Key Selection Criteria</h3>
+                <ul>
+                    <li>
+                        <strong>Cost:</strong> Does the model use **token-based pricing** (per input/output token) or **Provisioned Throughput** (reserved capacity)? This is essential for budget forecasting.
+                    </li>
+                    <li>
+                        <strong>Modality:</strong> Does the model handle only text (**LLM**), or is it **multimodal** (images, video, audio)? Choose a model that matches the required input/output type.
+                    </li>
+                    <li>
+                        <strong>Latency:</strong> How fast is the response time? Smaller models generally have lower **latency**, which is critical for real-time user experiences.
+                    </li>
+                    <li>
+                        <strong>Multi-lingual Support:</strong> Does the model support the languages required by your user base?
+                    </li>
+                    <li>
+                        <strong>Model Size & Complexity:</strong> Choose the smallest model that meets your required quality and complexity threshold, as larger models are more expensive to run.
+                    </li>
+                    <li>
+                        <strong>Customization Capability:</strong> Can the model be **fine-tuned** or leverage techniques like **RAG**? This is necessary if the model needs to learn your unique enterprise jargon or style.
+                    </li>
+                    <li>
+                        <strong>Input/Output Length (Context Window):</strong> This defines the maximum number of **tokens** (words or sub-words) the model can process in a single request (prompt + response).
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">2. Understanding Inference Parameters</h2>
+                <p>Inference parameters are control settings that allow you to influence the behavior and creativity of the Foundation Model during response generation.</p>
+                
+                <h3 class="subsection-title">Key Parameters and Their Effects</h3>
+                <ul>
+                    <li>
+                        <strong>Temperature (0.0 to 1.0):</strong>
+                        <p>Controls the randomness and creativity of the response. A **lower temperature** (e.g., 0.1) results in more deterministic, predictable, and factual answers (ideal for summarization or code generation). A **higher temperature** (e.g., 0.8) introduces more variance and creativity (ideal for brainstorming or storytelling).</p>
+                    </li>
+                    <li>
+                        <strong>Maximum Output Length (Max Tokens):</strong>
+                        <p>Determines the hard limit on the length of the model's generated response (in tokens). Setting this too low can cut off incomplete sentences, while setting it too high wastes computational resources and increases cost per request.</p>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Section 3: Retrieval Augmented Generation (RAG) -->
+            <div class="section">
+                <h2 class="section-title">3. Retrieval Augmented Generation (RAG) Deep Dive</h2>
+                
+                <h3 class="subsection-title">Definition and Purpose</h3>
+                
+                <div class="rag-definition">
+                    <p><strong>Retrieval Augmented Generation (RAG)</strong> is an architectural pattern that enhances the output of a **Foundation Model (FM)** by retrieving relevant, up-to-date, and proprietary information from external knowledge sources and inserting that information into the FM's prompt context.</p>
+                </div>
+
+                <p>The primary motivations for using **RAG** are:</p>
+                <ul>
+                    <li>
+                        <strong>Grounding/Factuality:</strong> RAG ensures the model's response is grounded in **real-time** or **private enterprise data**, reducing "hallucinations" (confident but factually incorrect outputs).
+                    </li>
+                    <li>
+                        <strong>Customization:</strong> It allows the FM to answer questions about proprietary documents (e.g., internal HR policies) without requiring expensive **fine-tuning** of the entire model.
+                    </li>
+                    <li>
+                        <strong>Cost-Effectiveness:</strong> RAG is significantly cheaper and faster to implement than re-training or fine-tuning a massive FM every time your knowledge base updates.
+                    </li>
+                </ul>
+                
+                <h3 class="subsection-title">The RAG Process in Detail</h3>
+
+                <p>The RAG workflow consists of two main phases: **Indexing** (one-time setup) and **Retrieval** (per-query execution).</p>
+                
+                <ol>
+                    <li>
+                        <strong>Indexing Phase (Setup):</strong> Documents are broken into small chunks. These chunks are converted into **vector embeddings** (numerical representations of meaning) and stored in a searchable **vector database**.
+                    </li>
+                    <li>
+                        <strong>User Query Embedding:</strong> The user's query is converted into its corresponding **vector embedding** using the *exact same* embedding model.
+                    </li>
+                    <li>
+                        <strong>Retrieval (Vector Search):</strong> The query embedding is used to search the **vector database** for the top N most semantically relevant document chunks.
+                    </li>
+                    <li>
+                        <strong>Augmentation (Prompt Construction):</strong> The original user query is combined with the retrieved text chunks to form a single, comprehensive **augmented prompt**.
+                    </li>
+                    <li>
+                        <strong>Generation:</strong> The FM processes the augmented prompt and generates a grounded response, using *only* the provided context to answer the query.
+                    </li>
+                </ol>
+                
+                <h3 class="subsection-title">RAG Business Applications & Services</h3>
+
+                <p>Typical RAG use cases include **Customer Support** (answering based on product manuals), **Internal Knowledge Management** (querying company policies), and **Financial Analysis** (grounding answers in private quarterly reports).</p>
+                <p>Services like **Amazon Bedrock's Knowledge Base** automate the complex steps of data ingestion, chunking, embedding, and vector storage, allowing you to connect FMs to your data in Amazon S3 quickly.</p>
+
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
