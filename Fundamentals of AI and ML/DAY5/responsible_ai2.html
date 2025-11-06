@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 5 - Part 2 - Responsible AI: Data and Bias | Course Series by Adarshana</title>
+    <meta name="description" content="Analyzing dataset characteristics, the impact of bias/variance, and tools like SageMaker Clarify and A2I.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            /* Consistent Background */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #764ba2; /* Consistent strong color */
+            font-weight: 600;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+        
+        .tool-box {
+            border-left: 4px solid #667eea; 
+            background-color: #f3f7ff;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 5 - PART 2</div>
+                <h1 class="course-title">Responsible AI: Data, Bias, and Monitoring</h1>
+                <p class="course-subtitle">Ensuring fairness from dataset to deployment</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">💾</div>
+                        <span>Dataset Integrity</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">⚖️</div>
+                        <span>Bias & Variance</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">📊</div>
+                        <span>Detection & Monitoring</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 1: Characteristics of Responsible Datasets -->
+            <div class="section">
+                <h2 class="section-title">1. Characteristics of Responsible Datasets</h2>
+                <p>The foundation of a fair and robust AI system is its data. Most algorithmic bias originates not from the model, but from the data it was trained on.</p>
+                
+                <ul>
+                    <li>
+                        <strong>Inclusivity and Diversity:</strong> The dataset must reflect the full spectrum of your end-users. A model trained on a dataset that is not diverse (e.g., speech recognition trained only on male voices) will have poor performance and exhibit bias against the underrepresented groups (female voices).
+                    </li>
+                    <li>
+                        <strong>Curated Data Sources:</strong> This refers to data that has been thoughtfully selected, sourced, and vetted for quality, relevance, and provenance (its origin). It is the opposite of "scrape-and-pray," ensuring you are not accidentally ingesting low-quality or highly biased information.
+                    </li>
+                    <li>
+                        <strong>Balanced Datasets:</strong> A dataset is balanced if it contains a roughly equal representation of all classes or groups of interest. An imbalanced dataset (e.g., 99% non-fraudulent transactions, 1% fraudulent) will cause the model to perform poorly on the minority class (fraud).
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Section 2: The Effects of Bias and Variance -->
+            <div class="section">
+                <h2 class="section-title">2. Understanding Effects of Bias and Variance</h2>
+                <p>In machine learning, "bias" and "variance" are statistical terms that have a direct impact on model fairness and accuracy.</p>
+
+                <h3 class="subsection-title">Statistical Bias (Underfitting)</h3>
+                <p>This is a technical, statistical error where the model is too simple to capture the underlying patterns in the data (e.g., using a straight line to model a curved-line relationship).
+                    <ul>
+                        <li><strong>Effect:</strong> Leads to high **inaccuracy** across *all* groups because the model is fundamentally wrong. This is **underfitting**.</li>
+                    </ul>
+                </p>
+
+                <h3 class="subsection-title">Statistical Variance (Overfitting)</h3>
+                <p>This is an error where the model is too complex and learns the *noise* in the training data, not the actual signal.
+                    <ul>
+                        <li><strong>Effect:</strong> The model performs perfectly on data it has seen but fails spectacularly on new, unseen data. This is **overfitting** and shows the model is not robust.</li>
+                    </ul>
+                </p>
+                
+                <h3 class="subsection-title">Algorithmic Bias (The Real-World Impact)</h3>
+                <p>This is the most critical concept for Responsible AI. A model can be statistically accurate (low bias and variance) on the *whole* dataset, but still be deeply unfair.
+                    <ul>
+                        <li><strong>Effect on Demographic Groups:</strong> This occurs when the model's performance (e.g., error rate, accuracy) is different for different subgroups. For example, a loan-approval model that is 95% accurate for one demographic but only 75% accurate for another is exhibiting harmful algorithmic bias, even if its *overall* accuracy is 90%.</li>
+                    </ul>
+                </p>
+            </div>
+            
+            <!-- Section 3: Tools to Detect and Monitor Bias -->
+            <div class="section">
+                <h2 class="section-title">3. Tools for Detection and Monitoring</h2>
+                <p>You cannot fix a bias you cannot measure. AWS provides a suite of MLOps tools specifically designed to identify and monitor bias and data quality.</p>
+
+                <div class="tool-box">
+                    <h3 class="subsection-title">Amazon SageMaker Clarify</h3>
+                    <p>This is the primary service for bias detection. It runs *independent* of your model to measure and report on bias.</p>
+                    <ul>
+                        <li><strong>Pre-Training Bias Analysis:</strong> It analyzes your initial dataset *before* training to identify imbalances.</li>
+                        <li><strong>Post-Training Bias Analysis:</strong> It analyzes a *trained model* to see if its predictions are biased across different **subgroups** (e.g., "Are loan approvals skewed by age?"). This is a form of automated **subgroup analysis**.</li>
+                        <li><strong>Explainability:</strong> It also provides feature importance scores (e.g., SHAP) to explain *why* a model made a certain prediction, which is key to **trustworthiness**.</li>
+                    </ul>
+                </div>
+
+                <div class="tool-box">
+                    <h3 class="subsection-title">Amazon SageMaker Model Monitor</h3>
+                    <p>This tool is for monitoring bias and quality *in production*. A model that was fair at launch can become biased over time if the production data changes (data drift).</p>
+                    <ul>
+                        <li>It automatically monitors for **data drift** (e.g., the demographics of your users change) and **model quality drift** (e.g., the model's accuracy is dropping for a specific subgroup).</li>
+                        <li>This ensures that your model remains fair, trustworthy, and accurate long after deployment.</li>
+                    </ul>
+                </div>
+
+                <div class="tool-box">
+                    <h3 class="subsection-title">Amazon Augmented AI (Amazon A2I)</h3>
+                    <p>A2I is the "human-in-the-loop" service, essential for **truthfulness** and auditing.</p>
+                    <ul>
+                        <li>It operationalizes **human audits** by automatically routing low-confidence predictions to human reviewers.</li>
+                        <li>This is critical for **analyzing label quality** (are your ground truth labels correct?) and catching subtle failures (like nuanced hallucinations or bias) that automated metrics would miss. It builds a human feedback loop to ensure **trustworthiness**.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
