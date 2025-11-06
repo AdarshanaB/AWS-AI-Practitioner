@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 3 - Part 1 - Generative AI: Concepts, Use Cases, and Lifecycle | Course Series by Adarshana</title>
+    <meta name="description" content="Explaining foundational concepts, use cases, and the lifecycle of Foundation Models for Generative AI.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #764ba2;
+            font-weight: 600;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 3 - PART 1</div>
+                <h1 class="course-title">Generative AI: Concepts, Use Cases, and Lifecycle</h1>
+                <p class="course-subtitle">The foundation of modern AI and large language models</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">🧠</div>
+                        <span>Core Concepts</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🚀</div>
+                        <span>High Priority</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">💡</div>
+                        <span>AWS Practitioner Prep</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <p>Generative AI is a category of artificial intelligence models designed to generate new content, such as text, images, code, or audio. Understanding the components that power these models and how they are developed is crucial for working with any modern AI service.</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">1. Foundational Generative AI Concepts</h2>
+                
+                <h3 class="subsection-title">Tokenization and Data Preparation</h3>
+                <ul>
+                    <li>
+                        <strong>Tokens:</strong> The smallest units of data that a model processes. For text, a token can be a whole word, a sub-word (like 'ing' or 'pre'), or a character. Models don't process raw text; they convert it into sequences of tokens.
+                    </li>
+                    <li>
+                        <strong>Chunking:</strong> The process of dividing large documents or data sources into smaller, fixed-size pieces (chunks). This is necessary because models have a limited **context window** (the maximum number of tokens they can process at once). Chunking helps feed relevant, manageable sections of data for retrieval-augmented generation (RAG).
+                    </li>
+                </ul>
+
+                <h3 class="subsection-title">Vectorization and Representation</h3>
+                <ul>
+                    <li>
+                        <strong>Embeddings:</strong> Numerical representations (lists of numbers) of complex data like words, phrases, or images. These vectors capture the **semantic meaning** and context of the input. Text that is similar in meaning will have embeddings that are numerically close together in the vector space.
+                    </li>
+                    <li>
+                        <strong>Vectors:</strong> Simply put, a vector is the array of numbers (the embedding itself) used to represent the data. In a vector database, these vectors are indexed to allow for fast **similarity search**, which is fundamental to RAG.
+                    </li>
+                </ul>
+                
+                <h3 class="subsection-title">Model Architecture and Types</h3>
+                <ul>
+                    <li>
+                        <strong>Transformer-based LLMs:</strong> The dominant architecture for Large Language Models (LLMs). The key innovation is the **self-attention mechanism**, which allows the model to weigh the importance of different words in the input sequence to understand context, regardless of how far apart they are in the text.
+                    </li>
+                    <li>
+                        <strong>Foundation Models (FMs):</strong> Extremely large, pre-trained models (e.g., Llama, Jurassic, Titan) trained on vast and diverse amounts of unlabeled data. They are designed to be general-purpose and can be adapted (fine-tuned) to perform a wide variety of downstream tasks (e.g., summarization, Q\&A, classification) without needing to be retrained from scratch.
+                    </li>
+                    <li>
+                        <strong>Multi-modal Models:</strong> Generative models that can seamlessly process and generate content across two or more modalities, such as combining text, images, and audio. For example, you can give the model an image and a text prompt, and it can generate a new image or a text description based on both inputs.
+                    </li>
+                    <li>
+                        <strong>Diffusion Models:</strong> A class of generative models primarily used for generating realistic images and audio. They work by iteratively removing noise from an initial random noisy input until a coherent image (or sound) is produced. This technique is behind many state-of-the-art image generators.
+                    </li>
+                </ul>
+
+                <h3 class="subsection-title">Input and Control</h3>
+                <ul>
+                    <li>
+                        <strong>Prompt Engineering:</strong> The discipline of strategically designing input prompts (text, images, or code) to guide a generative AI model to produce a desired, high-quality, and reliable output. It involves techniques like providing context, examples (few-shot learning), and specifying the desired format.
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">2. Potential Use Cases for Generative AI</h2>
+                <p>Generative AI is a powerful general-purpose technology, driving innovation across nearly every industry by automating content creation and enhancing human interaction.</p>
+                
+                <h3 class="subsection-title">Creative and Content Generation</h3>
+                <ul>
+                    <li><strong>Image, Video, and Audio Generation:</strong> Creating realistic, custom media for marketing, entertainment, or design mock-ups based solely on text descriptions.</li>
+                    <li><strong>Code Generation:</strong> Assisting developers by generating, completing, debugging, or translating code snippets across different programming languages.</li>
+                </ul>
+
+                <h3 class="subsection-title">Productivity and Information Retrieval</h3>
+                <ul>
+                    <li><strong>Summarization:</strong> Condensing long documents, transcripts, or articles into concise, actionable summaries.</li>
+                    <li><strong>Translation:</strong> Providing highly contextual and nuanced language translation for communication and localization.</li>
+                    <li><strong>Search/Recommendation Engines:</strong> Augmenting traditional search by generating direct answers instead of just linking to documents (RAG), or creating personalized product descriptions.</li>
+                </ul>
+
+                <h3 class="subsection-title">Customer and Business Interaction</h3>
+                <ul>
+                    <li><strong>Chatbots and Virtual Assistants:</strong> Powering sophisticated conversational agents that can handle complex queries, manage bookings, or provide technical support with a human-like tone.</li>
+                    <li><strong>Customer Service Agents:</strong> Automating the handling of initial customer inquiries and routing complex issues to human agents, leading to faster response times and lower operating costs.</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">3. The Foundation Model Lifecycle</h2>
+                <p>Unlike traditional ML models, Foundation Models have a distinct lifecycle defined by two major phases: pre-training and adaptation.</p>
+                
+                <ul>
+                    <li>
+                        <strong>1. Data Selection:</strong> Identifying and curating massive, diverse, high-quality datasets (trillions of tokens) from the internet, books, and code repositories. Data cleanliness is paramount.
+                    </li>
+                    <li>
+                        <strong>2. Model Selection:</strong> Choosing the transformer architecture (encoder, decoder, or encoder-decoder) and the sheer scale (number of parameters, layers) of the model for the given task.
+                    </li>
+                    <li>
+                        <strong>3. Pre-training:</strong> The expensive, computationally intensive process of training the model on the vast dataset using self-supervised learning tasks (e.g., next word prediction). This phase creates the general knowledge base.
+                    </li>
+                    <li>
+                        <strong>4. Fine-tuning (Adaptation):</strong> Adjusting the pre-trained FM for specific tasks or domain expertise. Techniques include:
+                        <ul>
+                            <li>**Supervised Fine-Tuning (SFT):** Training on a small, high-quality set of examples specific to a task (e.g., making the model better at summarization).</li>
+                            <li>**Prompt Tuning/LoRA:** Efficient methods to adapt the model without modifying all parameters, significantly reducing cost and time.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>5. Evaluation and Alignment:</strong> Assessing model performance (perplexity, accuracy) and aligning it with human values/instructions (e.g., using Reinforcement Learning from Human Feedback, or RLHF).
+                    </li>
+                    <li>
+                        <strong>6. Deployment:</strong> Making the finalized, optimized model available for inference, typically as a managed API service (like an Amazon SageMaker Endpoint or Amazon Bedrock API).
+                    </li>
+                    <li>
+                        <strong>7. Feedback and Monitoring:</strong> Collecting user feedback and production data to continuously evaluate the model's output quality, detect drift, and inform the next iteration of fine-tuning or pre-training. This closes the MLOps loop.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
