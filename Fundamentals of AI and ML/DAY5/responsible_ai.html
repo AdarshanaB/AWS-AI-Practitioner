@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 5 - Part 1 - Responsible AI Development | Course Series by Adarshana</title>
+    <meta name="description" content="Explaining the core features of Responsible AI, including fairness, bias, safety, and legal risks.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            /* Consistent Background */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #764ba2; /* Consistent strong color */
+            font-weight: 600;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+        
+        /* Risk item styling from Day 4 Part 1 */
+        .risk-item {
+            border-left: 4px solid #d9534f; /* Red border for risks */
+            background-color: #fff8f8;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 5 - PART 1</div>
+                <h1 class="course-title">Guidelines for Responsible AI</h1>
+                <p class="course-subtitle">Developing Fair, Safe, and Trustworthy Systems</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">⚖️</div>
+                        <span>Fairness & Inclusivity</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🛡️</div>
+                        <span>Safety & Robustness</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🏛️</div>
+                        <span>Legal Risks & Governance</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 1: Features of Responsible AI -->
+            <div class="section">
+                <h2 class="section-title">1. Features of Responsible AI</h2>
+                <p>Responsible AI is a framework of principles to ensure AI systems are ethical, trustworthy, and accountable. These features are not optional; they are essential for long-term adoption and safety.</p>
+                
+                <ul>
+                    <li>
+                        <strong>Bias and Fairness:</strong> <strong>Bias</strong> refers to a model's tendency to produce results that are systemically prejudiced against individuals or groups based on attributes like race, gender, or age. <strong>Fairness</strong> is the active effort to detect and mitigate this bias, ensuring the model's outputs are impartial and equitable.
+                    </li>
+                    <li>
+                        <strong>Inclusivity:</strong> A broader concept than fairness, inclusivity means designing AI systems that are accessible, usable, and representative of all people, including those with disabilities, different cultural backgrounds, and diverse linguistic needs.
+                    </li>
+                    <li>
+                        <strong>Robustness and Safety:</strong> <strong>Robustness</strong> is the model's technical ability to perform reliably under a wide range of conditions, including unexpected inputs or adversarial attacks (like jailbreaking). <strong>Safety</strong> is the outcome: ensuring the model does not cause harm, produce dangerous instructions, or fail in critical situations.
+                    </li>
+                    <li>
+                        <strong>Veracity (Truthfulness):</strong> This is the model's commitment to accuracy. For generative AI, this is primarily about controlling **hallucinations** and ensuring that the information provided is factual and can be verified.
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Section 2: Tools for Responsible AI -->
+            <div class="section">
+                <h2 class="section-title">2. Tools to Identify and Manage Responsible AI</h2>
+                <p>AWS provides tools that operationalize these principles, moving them from abstract ideas to concrete configurations.</p>
+
+                <h3 class="subsection-title">Guardrails for Amazon Bedrock</h3>
+                <p>This is a key service for enforcing safety and responsibility at the application layer. Instead of relying only on the model's built-in protections, Guardrails allow you to define and enforce your company's specific policies.</p>
+                <ul>
+                    <li>
+                        <strong>Denied Topics:</strong> Allows you to define subjects the model should not discuss (e.g., "investment advice," "competitor X"). This prevents the model from straying into high-risk or off-brand areas.
+                    </li>
+                    <li>
+                        <strong>Content Filters:</strong> Provides configurable filters to block harmful content across categories like **Hate**, **Insults**, **Sexual**, and **Violence**. You can set a threshold (e.g., block "high" confidence hate speech) for each.
+                    </li>
+                    <li>
+                        <strong>Personally Identifiable Information (PII) Redaction:</strong> Automatically identifies and redacts sensitive PII in both the user's prompt and the model's response, which is critical for privacy and compliance.
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Section 3: Responsible Model Selection Practices -->
+            <div class="section">
+                <h2 class="section-title">3. Responsible Practices to Select a Model</h2>
+                <p>Responsibility begins before a single line of code is written—it starts with the selection of the model itself.</p>
+                
+                <h3 class="subsection-title">Environmental Considerations and Sustainability</h3>
+                <ul>
+                    <li>
+                        <strong>Carbon Footprint:</strong> Training large Foundation Models consumes massive amounts of energy. A responsible practice involves considering this environmental impact.
+                    </li>
+                    <li>
+                        <strong>Model Efficiency:</strong> Instead of defaulting to the largest model, choose the **smallest, most efficient model** that can accomplish the task. This saves compute costs and reduces energy consumption.
+                    </li>
+                    <li>
+                        <strong>Provider Choice:</strong> Select a cloud provider, like AWS, that has a clear commitment to sustainability and is on a path to powering its data centers with 100% renewable energy.
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Section 4: Legal Risks of Generative AI -->
+            <div class="section">
+                <h2 class="section-title">4. Identifying Legal Risks of Generative AI</h2>
+                <p>The novel capabilities of generative AI introduce significant new legal and business risks that must be actively managed.</p>
+
+                <ul>
+                    <li class="risk-item">
+                        <strong>Intellectual Property (IP) Infringement:</strong> This is a major risk. A model trained on copyrighted data (code, art, text) may generate an output that is "substantially similar" to its training data, exposing your organization to claims of plagiarism or IP infringement.
+                    </li>
+                    <li class="risk-item">
+                        <strong>Biased Model Outputs:</strong> If a model used for screening (e.g., hiring, loan applications) is found to be biased, it can lead to severe discrimination lawsuits, regulatory fines, and reputational damage.
+                    </li>
+                    <li class="risk-item">
+                        <strong>Loss of Customer Trust:</strong> This is a critical business risk. If your brand's chatbot is offensive, hallucinates, or is perceived as "creepy," it can instantly destroy customer trust that took years to build.
+                    </li>
+                    <li class="risk-item">
+                        <strong>End User Risk (Liability):</strong> What happens if a user acts on a model's hallucination? If the model provides incorrect medical, legal, or financial advice, your organization could be held liable for the harmful outcome.
+                    </li>
+                    <li class="risk-item">
+        				<strong>Hallucinations:</strong> Beyond end-user risk, hallucinations pose a risk of spreading misinformation. If your model confidently states an incorrect fact, it can harm your brand's credibility.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
