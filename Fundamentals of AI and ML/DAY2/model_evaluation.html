@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 2 - Part 9 - Model Evaluation: Performance & Business Metrics | Course Series by Adarshana</title>
+    <meta name="description" content="Understanding technical performance metrics and linking them to critical business outcomes.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 2 - PART 9</div>
+                <h1 class="course-title">ML Model Evaluation: Performance & Business Metrics</h1>
+                <p class="course-subtitle">Measuring success in the lab and the board room</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">📖</div>
+                        <span>25 min read</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🎯</div>
+                        <span>Intermediate</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">💡</div>
+                        <span>Evaluation & Value</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <p>A high-performing model isn't always a successful model. To truly evaluate the effectiveness of a machine learning project, you must look at two distinct but equally important categories of metrics: **technical performance metrics** (what the data scientist cares about) and **business metrics** (what the stakeholders care about).</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">1. Model Performance Metrics (Technical)</h2>
+                <p>These metrics quantify how well the model predicts outcomes on unseen data. The choice of metric depends heavily on the problem (classification, regression, etc.) and the data's characteristics.</p>
+                
+                <h3 class="subsection-title">Key Classification Metrics</h3>
+                <ul>
+                    <li>
+                        <strong>Accuracy:</strong> The ratio of correct predictions to total predictions.
+                        <p><strong>Caveat:</strong> Can be misleading on **imbalanced datasets**. If $95\%$ of cases are 'No Fraud', a model that always predicts 'No Fraud' has $95\%$ accuracy but is useless.</p>
+                    </li>
+                    <li>
+                        <strong>F1 Score:</strong> The harmonic mean of **Precision** (true positives out of all positive predictions) and **Recall** (true positives out of all actual positives).
+                        <p><strong>Use Case:</strong> Ideal for imbalanced classes or when you need a balance between minimizing false positives (Precision) and false negatives (Recall).</p>
+                    </li>
+                    <li>
+                        <strong>Area Under the ROC Curve (AUC):</strong> Measures the model's ability to discriminate between positive and negative classes across all possible classification thresholds.
+                        <p><strong>Use Case:</strong> A score of $1.0$ is perfect discrimination; $0.5$ is random chance. It's often used when the relative ranking of predictions is more important than the exact classification threshold.</p>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">2. Business Metrics (Organizational Impact)</h2>
+                <p>These metrics translate the model's technical performance into tangible organizational value, determining whether the MLOps investment was worthwhile.</p>
+
+                <h3 class="subsection-title">Financial and Cost Metrics</h3>
+                <ul>
+                    <li>
+                        <strong>Return on Investment (ROI):</strong> The overall financial gain or loss attributable to the model.
+                        <p><strong>Calculation:</strong> $(\text{Revenue Increase} - \text{Total Project Cost}) / \text{Total Project Cost}$. This is the ultimate measure of success for any business initiative.</p>
+                    </li>
+                    <li>
+                        <strong>Total Development Costs:</strong> Includes personnel (salaries for data scientists, ML engineers), compute resources for training, and software licensing.
+                        <p><strong>MLOps Role:</strong> MLOps aims to reduce recurring development costs by automating retraining pipelines.</p>
+                    </li>
+                    <li>
+                        <strong>Cost per Prediction/User:</strong> The marginal cost of running the model inference in production (e.g., cloud API calls, GPU usage).
+                        <p><strong>Importance:</strong> Essential for scaling. A model with high accuracy but a prohibitive cost per prediction cannot be scaled profitably.</p>
+                    </li>
+                </ul>
+                
+                <h3 class="subsection-title">Operational and Feedback Metrics</h3>
+                <ul>
+                    <li>
+                        <strong>Customer Feedback/Adoption Rate:</strong> Measures user satisfaction and how often the ML-powered feature is actually used.
+                        <p><strong>Example:</strong> If a recommendation model has $90\%$ accuracy but users ignore the recommendations, the business value is zero.</p>
+                    </li>
+                    <li>
+                        <strong>Time to Insight:</strong> How quickly the model can process data and deliver a prediction (latency).
+                        <p><strong>Importance:</strong> For real-time applications (e.g., fraud detection), low latency is a direct business requirement.</p>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">3. Integrating Performance and Business Evaluation</h2>
+                <p>The core challenge in MLOps is bridging the gap between a high F1 score and a high ROI. The two sets of metrics must be used together to define project success.</p>
+                <ul>
+                    <li>
+                        <strong>Defining Success:</strong> You should always define a **minimum acceptable performance threshold** (e.g., minimum AUC of $0.85$) that is required to achieve a **positive business outcome** (e.g., $10\%$ reduction in manual processing costs).
+                    </li>
+                    <li>
+                        <strong>Trade-offs:</strong> Often, there is a trade-off. It may be better to deploy a slightly less accurate model ($0.85$ AUC) that is $5$ times cheaper to run (low Cost per Prediction) than a high-accuracy model ($0.90$ AUC) that costs too much to deploy broadly.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
