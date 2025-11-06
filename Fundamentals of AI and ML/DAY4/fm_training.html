@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 4 - Part 2 - Foundation Model Training | Course Series by Adarshana</title>
+    <meta name="description" content="Key elements of Foundation Model training, fine-tuning methods, and data preparation processes including RLHF.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            /* Consistent Background */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #764ba2; /* Consistent strong color */
+            font-weight: 600;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+        
+        .term-box {
+            border-left: 4px solid #764ba2; 
+            background-color: #f7f3ff;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 4 - PART 2</div>
+                <h1 class="course-title">Foundation Model Lifecycle</h1>
+                <p class="course-subtitle">Training, Fine-Tuning, and Data Preparation</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">🧠</div>
+                        <span>Training Elements</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🛠️</div>
+                        <span>Fine-Tuning Methods</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🗂️</div>
+                        <span>Data Preparation & RLHF</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 1: Key Elements of Foundation Model Training -->
+            <div class="section">
+                <h2 class="section-title">1. Key Elements of Model Training</h2>
+                <p>Training a large Foundation Model is a multi-stage process, starting with massive data ingestion and ending with human-aligned performance.</p>
+                
+                <h3 class="subsection-title">Pre-Training (The Generalist Phase)</h3>
+                <div class="term-box">
+                    <p>This is the first and most expensive stage. The model is exposed to a **massive, diverse corpus of raw, unlabeled data** (e.g., the entire internet, books, code). The objective is to learn **general patterns, grammar, semantics, and world knowledge**. The model learns to predict the next word in a sequence (unsupervised learning).</p>
+                </div>
+                
+                <h3 class="subsection-title">Fine-Tuning (The Specialist Phase)</h3>
+                <div class="term-box">
+                    <p>After pre-training, the model is adjusted using a **smaller, high-quality, labeled dataset** specific to a task (e.g., Q&A, sentiment analysis) or alignment (e.g., following instructions, safety). This step makes the generalist model a specialized tool.</p>
+                </div>
+
+                <h3 class="subsection-title">Continuous Pre-Training</h3>
+                <div class="term-box">
+                    <p>This involves occasionally updating a pre-trained model's core knowledge base with **new data** to keep it current. For example, updating a model's knowledge of current events or new software APIs that didn't exist when it was originally trained. This is distinct from regular fine-tuning, as it expands general knowledge rather than teaching a specific skill.</p>
+                </div>
+            </div>
+            
+            <!-- Section 2: Methods for Fine-Tuning -->
+            <div class="section">
+                <h2 class="section-title">2. Methods for Fine-Tuning a Foundation Model</h2>
+                <p>Fine-tuning makes the model practical and safe. Here are the core methods:</p>
+
+                <ul>
+                    <li>
+                        <strong>Instruction Tuning:</strong> This is the most common method. The model is fine-tuned on **thousands of examples of instructions and their high-quality answers**. This teaches the model to follow commands (e.g., "Write a poem," "Explain photosynthesis") rather than just predict the next word, transforming it into a helpful assistant.
+                    </li>
+                    <li>
+                        <strong>Adapting Models for Specific Domains:</strong> This involves fine-tuning a model using a specialized, proprietary dataset (e.g., legal documents, medical research, internal company memos). The model retains its general knowledge but becomes **expert in that niche domain**.
+                    </li>
+                    <li>
+                        <strong>Transfer Learning:</strong> The fundamental concept that underpins fine-tuning. It means taking the weights (knowledge) learned from a **source task** (pre-training on vast text) and applying them to improve performance on a related but different **target task** (like summarization).
+                    </li>
+                    <li>
+                        <strong>Parameter-Efficient Fine-Tuning (PEFT):</strong> Techniques like **LoRA (Low-Rank Adaptation)** which allow you to fine-tune a model by only training a small fraction of its parameters. This dramatically reduces the cost and time required, making fine-tuning accessible.
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Section 3: Data Preparation and RLHF -->
+            <div class="section">
+                <h2 class="section-title">3. Data Preparation and RLHF</h2>
+                <p>The quality of the training data determines the quality of the model. This phase is about sourcing and shaping that data.</p>
+                
+                <h3 class="subsection-title">Data Curation and Governance</h3>
+                <ul>
+                    <li><strong>Data Curation:</strong> The process of cleaning, filtering, and organizing the raw data to remove noise, toxic content, and duplication. It ensures the data is high-quality and free of biases or errors.</li>
+                    <li><strong>Governance:</strong> Establishing clear rules for data access, use, and compliance (e.g., PII removal, copyright adherence) during the training lifecycle.</li>
+                </ul>
+
+                <h3 class="subsection-title">Key Data Metrics</h3>
+                <ul>
+                    <li><strong>Size:</strong> Generally, the more data, the better, though diminishing returns apply. For fine-tuning, the focus shifts from quantity to **quality**.</li>
+                    <li><strong>Labeling:</strong> For fine-tuning, data must be properly labeled (e.g., mapping a question to a correct answer).</li>
+                    <li><strong>Representativeness:</strong> The data must accurately reflect the intended user base and tasks to avoid biases or poor performance in real-world scenarios.</li>
+                </ul>
+
+                <h3 class="subsection-title">Reinforcement Learning from Human Feedback (RLHF)</h3>
+                <p>RLHF is the final, crucial step for making a model helpful and safe:</p>
+                <ol>
+                    <li><strong>Human Comparison:</strong> Human labelers rank multiple model outputs for the same prompt based on helpfulness, accuracy, and safety.</li>
+                    <li><strong>Reward Model Training:</strong> This ranking data is used to train a separate **Reward Model (RM)** that can automatically predict which output humans prefer.</li>
+                    <li><strong>Model Alignment:</strong> The original LLM is then fine-tuned using Reinforcement Learning (RL), receiving rewards from the RM for generating highly-ranked responses. This aligns the model's behavior with human values and instructions.</li>
+                </ol>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
