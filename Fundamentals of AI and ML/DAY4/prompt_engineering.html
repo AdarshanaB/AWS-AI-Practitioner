@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 4 - Part 1 - Prompt Engineering Techniques | Course Series by Adarshana</title>
+    <meta name="description" content="A detailed guide to prompt engineering concepts, techniques, best practices, and security risks.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            /* Consistent Background */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .document {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .course-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subsection-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #764ba2; /* Consistent strong color */
+            font-weight: 600;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+        
+        /* Specific class for risk items */
+        .risk-item {
+            border-left: 4px solid #d9534f; /* Red border for risks */
+            background-color: #fff8f8;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watermark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .watermark-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .document {
+                padding: 25px;
+            }
+
+            .course-title {
+                font-size: 2.2rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="document">
+            <div class="header">
+                <div class="week-badge">DAY 4 - PART 1</div>
+                <h1 class="course-title">Mastering Prompt Engineering</h1>
+                <p class="course-subtitle">Techniques, Best Practices, and Security Risks</p>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <div class="meta-icon">✍️</div>
+                        <span>Concepts & Constructs</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🎯</div>
+                        <span>Core Techniques</span>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-icon">🔒</div>
+                        <span>Security & Risks</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 1: Concepts and Constructs -->
+            <div class="section">
+                <h2 class="section-title">1. Concepts and Constructs of Prompt Engineering</h2>
+                <p>A prompt is more than just a question; it's a structured request designed to guide the model toward a desired output. A well-crafted prompt consists of several key constructs:</p>
+                
+                <ul>
+                    <li>
+                        <strong>Context:</strong> Provides the background, setting, or proprietary information (like in RAG) that the model needs to understand the query. This "grounds" the model.
+                    </li>
+                    <li>
+                        <strong>Instruction:</strong> The specific, action-oriented command given to the model (e.g., "Summarize," "Translate," "Write code for...").
+                    </li>
+                    <li>
+                        <strong>Negative Prompts:</strong> An advanced instruction that specifies what you *do not* want in the output (e.g., "Do not use technical jargon," "Avoid marketing language"). This helps constrain the model's response.
+                    </li>
+                    <li>
+                        <strong>Model Latent Space:</strong> The abstract, high-dimensional space where the model's "knowledge" (represented as vectors) is stored. A prompt acts as a guide, steering the model to a specific region within this latent space to generate a relevant response.
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Section 2: Techniques for Prompt Engineering -->
+            <div class="section">
+                <h2 class="section-title">2. Techniques for Prompt Engineering</h2>
+                <p>Different techniques are used to provide the model with the right amount of information to perform a task.</p>
+
+                <ul>
+                    <li>
+                        <strong>Zero-Shot Learning:</strong> The model is given a high-level instruction and performs the task without any prior examples. (e.g., "Translate 'Hello, world' to French."). This relies on the model's vast pre-training.
+                    </li>
+                    <li>
+                        <strong>Single-Shot Learning (One-Shot):</strong> The model is given **one** example of the desired input/output format before being given the real task. This helps the model understand the expected structure.
+                    </li>
+                    <li>
+                        <strong>Few-Shot Learning:</strong> The model is given **multiple (2-5)** examples of the input/output format. This is highly effective for guiding the model on complex, specific, or nuanced tasks.
+                    </li>
+                    <li>
+                        <strong>Chain-of-Thought (CoT) Prompting:</strong> A form of few-shot learning where the examples include the *reasoning steps* used to get to the answer. By showing the model "how to think," you significantly improve its accuracy on complex logic, math, or reasoning problems.
+                    </li>
+                    <li>
+                        <strong>Prompt Templates:</strong> Creating a reusable, structured text with placeholders (e.g., `Summarize the following text: {{user_text}}`). This is the standard for building scalable applications, as it ensures consistency and allows the program to insert user input dynamically.
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Section 3: Benefits and Best Practices -->
+            <div class="section">
+                <h2 class="section-title">3. Benefits and Best Practices</h2>
+                <p>Effective prompt engineering is an iterative process that blends art and science.</p>
+                
+                <h3 class="subsection-title">Benefits</h3>
+                <ul>
+                    <li><strong>Response Quality Improvement:</strong> The single most effective way to get better, more accurate, and more useful responses from a model.</li>
+                    <li><strong>Discovery:</strong> Experimenting with prompts helps you discover the model's hidden capabilities and limitations.</li>
+                </ul>
+
+                <h3 class="subsection-title">Best Practices</h3>
+                <ul>
+                    <li><strong>Specificity and Concision:</strong> Be precise about what you want, but don't be overly verbose. Give clear, direct instructions.
+                    </li>
+                    <li><strong>Use Multiple Comments (for Code):</strong> When generating code, use comments to guide the model's logic and structure.
+                    </li>
+                    <li><strong>Experimentation:</strong> The first prompt is rarely the best. Continuously refine your wording, adjust temperature, and test different techniques (e.g., try zero-shot, then few-shot).
+                    </li>
+                    <li><strong>Implement Guardrails:</strong> For production applications, have systems in place (e.g., **Amazon SageMaker Model Monitor** or output validators) to check model responses for safety, toxicity, or undesirable content.
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Section 4: Risks and Limitations -->
+            <div class="section">
+                <h2 class="section-title">4. Risks and Limitations (Prompt Security)</h2>
+                <p>Because prompts are a new type of user input, they create new security vulnerabilities that must be managed.</p>
+
+                <ul>
+                    <li class="risk-item">
+                        <strong>Exposure / Leaking:</strong> A user may craft a prompt that tricks the model into revealing its own system prompt, proprietary instructions, or context data (from RAG) that it was not supposed to share.
+                    </li>
+                    <li class="risk-item">
+                        <strong>Poisoning:</strong> Refers to a model's training data (not the prompt) being "poisoned" with malicious or false information, which can then be surfaced by a user's prompt.
+                    </li>
+                    <li class="risk-item">
+                        <strong>Hijacking / Jailbreaking:</strong> A specific type of prompt attack where a user tries to override the model's built-in safety guardrails. The user attempts to "jailbreak" the model to make it perform tasks it was explicitly trained to refuse (e.g., generating harmful content).
+                    </li>
+                </ul>
+            </div>
+
+            <div class="watermark">
+                <div class="watermark-text">BY ADARSHANA</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
